@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SNS投稿AI生成ツール | ことりの巣</title>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #faf8f4;
+      --bg2:      #f2ede4;
+      --white:    #ffffff;
+      --crimson:  #8B0000;
+      --crimson2: #c0392b;
+      --gold:     #c4a86a;
+      --text:     #1a1a1a;
+      --text2:    #5a4e3c;
+      --text3:    #9a8a78;
+      --ok:       #16a34a;
+      --ok-lt:    #dcfce7;
+      --line:     rgba(139,0,0,0.12);
+      --shadow:   0 2px 16px rgba(0,0,0,0.07);
+      --radius:   16px;
+
+      --x-color:  #000000;
+      --ig-color: #E1306C;
+      --ln-color: #06C755;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── ヘッダー ── */
+    .tool-header {
+      background: var(--crimson);
+      color: #fff;
+      padding: 20px 24px 18px;
+      text-align: center;
+      position: relative;
+    }
+    .tool-header-label {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.4em;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .tool-header-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff;
+    }
+    .tool-header-sub {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 5px;
+      letter-spacing: 0.05em;
+    }
+    .header-deco {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    /* ── メインレイアウト ── */
+    .tool-body {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── 入力カード ── */
+    .input-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .card-label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      color: var(--text3);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 14px;
+    }
+    .form-group:last-of-type { margin-bottom: 0; }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text2);
+      letter-spacing: 0.05em;
+    }
+    .required {
+      color: var(--crimson);
+      margin-left: 3px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #e5ddd0;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .form-input:focus {
+      border-color: var(--crimson);
+      background: var(--white);
+    }
+    .form-input::placeholder { color: #c4b8a8; }
+
+    /* ── 生成ボタン ── */
+    .btn-generate {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--crimson), var(--crimson2));
+      color: #fff;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(139,0,0,0.3);
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-generate:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(139,0,0,0.38);
+    }
+    .btn-generate:active:not(:disabled) { transform: translateY(0); }
+    .btn-generate:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* ── ローディング ── */
+    .loading-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 36px 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      border: 1px solid var(--line);
+    }
+    .loading-emoji {
+      font-size: 2.4rem;
+      display: block;
+      margin-bottom: 12px;
+      animation: bounce 0.8s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+    .loading-text {
+      font-size: 0.82rem;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+    }
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+    @keyframes dots {
+      0%   { content: ''; }
+      25%  { content: '.'; }
+      50%  { content: '..'; }
+      75%  { content: '...'; }
+    }
+
+    /* ── 結果カード ── */
+    .result-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .result-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      animation: fadeUp 0.4s ease forwards;
+      opacity: 0;
+    }
+    .result-card:nth-child(1) { animation-delay: 0.05s; }
+    .result-card:nth-child(2) { animation-delay: 0.12s; }
+    .result-card:nth-child(3) { animation-delay: 0.19s; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .platform-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .platform-icon { font-size: 1.1rem; line-height: 1; }
+    .platform-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .result-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .char-count {
+      font-size: 0.68rem;
+      color: var(--text3);
+    }
+    .char-count.over { color: var(--crimson); font-weight: 500; }
+
+    .btn-copy {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: none;
+      background: #f0ebe3;
+      color: var(--text2);
+      font-size: 0.72rem;
+      font-weight: 500;
+      font-family: 'Noto Sans JP', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .btn-copy:hover { background: #e5ddd0; }
+    .btn-copy.copied {
+      background: var(--ok-lt);
+      color: var(--ok);
+    }
+
+    .result-textarea {
+      width: 100%;
+      border: 1.5px solid #ece5d8;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.9;
+      resize: vertical;
+      outline: none;
+      background: var(--bg);
+      transition: border-color 0.2s;
+    }
+    .result-textarea:focus {
+      border-color: var(--crimson);
+      background: var(--white);
+    }
+
+    /* ── 再生成ボタン ── */
+    .btn-retry {
+      width: 100%;
+      padding: 13px;
+      border-radius: 12px;
+      border: 1.5px solid var(--crimson);
+      background: transparent;
+      color: var(--crimson);
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-retry:hover { background: rgba(139,0,0,0.05); }
+
+    /* ── APIキー入力 ── */
+    .apikey-notice {
+      background: #fff8f0;
+      border: 1px solid rgba(139,0,0,0.2);
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 0.78rem;
+      color: var(--text2);
+      line-height: 1.8;
+      display: none;
+    }
+    .apikey-notice.show { display: block; }
+    .apikey-notice strong { color: var(--crimson); }
+
+    /* ── フッター ── */
+    .tool-footer {
+      text-align: center;
+      padding: 0 24px 16px;
+      font-size: 0.65rem;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header class="tool-header">
+  <span class="tool-header-label">AI TOOL DEMO</span>
+  <h1 class="tool-header-title">SNS投稿 AI生成ツール</h1>
+  <p class="tool-header-sub">メニュー情報を入れるだけで、3媒体のキャプションを自動生成</p>
+  <div class="header-deco"></div>
+</header>
+
+<div class="tool-body">
+
+  <!-- 入力カード -->
+  <div class="input-card">
+    <p class="card-label">📝 メニュー情報を入力</p>
+
+    <div class="form-group">
+      <label class="form-label" for="menu-name">メニュー名<span class="required">*</span></label>
+      <input class="form-input" type="text" id="menu-name" placeholder="例：濃厚鶏白湯ラーメン">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="price">価格（円）</label>
+      <input class="form-input" type="number" id="price" placeholder="例：980">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="note">一言メモ（任意）</label>
+      <input class="form-input" type="text" id="note" placeholder="例：数量限定20食、今日だけの特別仕込み">
+    </div>
+
+    <button class="btn-generate" id="btn-generate" disabled>
+      ✨ AIでキャプション生成
+    </button>
+  </div>
+
+  <!-- APIキー未設定の場合の注記 -->
+  <div class="apikey-notice" id="apikey-notice">
+    <strong>デモモード</strong>：実際の導入時はAPIキーを設定してリアルタイム生成が可能です。<br>
+    このデモではサンプル文章を表示しています。
+  </div>
+
+  <!-- ローディング -->
+  <div class="loading-card hidden" id="loading">
+    <span class="loading-emoji">🍜</span>
+    <p class="loading-text">各SNS用のキャプションを生成中<span class="loading-dots"></span></p>
+  </div>
+
+  <!-- 結果 -->
+  <div class="result-cards hidden" id="results"></div>
+
+  <!-- 再生成 -->
+  <button class="btn-retry hidden" id="btn-retry">🔄 再生成する</button>
+
+</div>
+
+<div class="tool-footer">Powered by Claude API · ことりの巣デモ</div>
+
+<script>
+const PLATFORMS = [
+  { id: 'x',         label: 'X（Twitter）', icon: '𝕏', color: '#000000', maxLen: 140, rows: 4 },
+  { id: 'instagram', label: 'Instagram',    icon: '📷', color: '#E1306C', maxLen: 2200, rows: 7 },
+  { id: 'line',      label: 'LINE',         icon: '💬', color: '#06C755', maxLen: 500,  rows: 4 },
+]
+
+// サンプルデータ（APIキーなし時）
+function getSampleCaptions(menuName, price, note) {
+  const priceStr = price ? `¥${price}` : ''
+  return {
+    x: `🍜【本日の日替わり】${menuName}${priceStr ? ' ' + priceStr : ''}\n${note ? note + '\n' : ''}素材にこだわった一杯、ぜひご賞味ください。\n#仙台ランチ #ラーメン #杜の雫`,
+    instagram: `🍜 本日の日替わりメニュー\n\n「${menuName}」${priceStr ? '　' + priceStr : ''}\n\n${note || '今日も丁寧に仕込みました。'}\n\n無化調・宮城県産素材にこだわった、最後の一滴まで美味しい一杯です。\nぜひ今日のランチに🙏\n\n#仙台ランチ #仙台グルメ #ラーメン #日替わりランチ #仙台ランチ巡り\n#無化調ラーメン #宮城グルメ #仙台飯 #ラーメン好きと繋がりたい #杜の雫`,
+    line: `🍜 本日の日替わりメニューのお知らせ\n\n「${menuName}」${priceStr ? '（' + priceStr + '）' : ''}\n\n${note || '今日も美味しい一杯をご用意しています。'}\n\nお席のご用意もできています。ぜひお気軽にお越しください😊`,
+  }
+}
+
+async function generateCaptions(menuName, price, note) {
+  const prompt = `あなたは「麺処 杜の雫」（仙台・青葉区のラーメン店）のSNS担当です。
+以下の日替わりメニュー情報をもとに、各SNS用の投稿キャプションを生成してください。
+
+メニュー名: ${menuName}
+価格: ${price ? `¥${price}` : '未設定'}
+一言メモ: ${note || 'なし'}
+
+店舗コンセプト: 無化調・宮城県産素材にこだわった一杯。「最後の一滴まで美味しい」
+
+以下のJSON形式のみで返答してください（前置き・説明・\`\`\`不要）:
+{
+  "x": "X(Twitter)用 140字以内。ハッシュタグ含む。絵文字あり。",
+  "instagram": "Instagram用 300字以内。改行多め。ハッシュタグ10個程度。",
+  "line": "LINE公式アカウント用 200字以内。親しみやすく。ハッシュタグなし。"
+}`
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  })
+
+  if (!res.ok) throw new Error('API error')
+  const data = await res.json()
+  const text = data.content?.find(b => b.type === 'text')?.text || '{}'
+  return JSON.parse(text.replace(/```json|```/g, '').trim())
+}
+
+// ── DOM ──
+const menuInput  = document.getElementById('menu-name')
+const priceInput = document.getElementById('price')
+const noteInput  = document.getElementById('note')
+const btnGen     = document.getElementById('btn-generate')
+const btnRetry   = document.getElementById('btn-retry')
+const loadingEl  = document.getElementById('loading')
+const resultsEl  = document.getElementById('results')
+const noticeEl   = document.getElementById('apikey-notice')
+
+menuInput.addEventListener('input', () => {
+  btnGen.disabled = !menuInput.value.trim()
+})
+
+let currentCaptions = null
+
+async function doGenerate() {
+  const menuName = menuInput.value.trim()
+  const price    = priceInput.value.trim()
+  const note     = noteInput.value.trim()
+
+  if (!menuName) return
+
+  // UI リセット
+  resultsEl.classList.add('hidden')
+  btnRetry.classList.add('hidden')
+  noticeEl.classList.remove('show')
+  loadingEl.classList.remove('hidden')
+  btnGen.disabled = true
+  btnGen.textContent = '🤖 生成中...'
+
+  try {
+    currentCaptions = await generateCaptions(menuName, price, note)
+  } catch {
+    // APIキーなし or エラー → サンプル表示
+    currentCaptions = getSampleCaptions(menuName, price, note)
+    noticeEl.classList.add('show')
+  }
+
+  loadingEl.classList.add('hidden')
+  renderResults(currentCaptions)
+  resultsEl.classList.remove('hidden')
+  btnRetry.classList.remove('hidden')
+  btnGen.disabled = false
+  btnGen.innerHTML = '✨ AIでキャプション生成'
+}
+
+function renderResults(captions) {
+  resultsEl.innerHTML = ''
+  PLATFORMS.forEach(({ id, label, icon, color, maxLen, rows }) => {
+    const text = captions[id] || ''
+    const over = text.length > maxLen
+
+    const card = document.createElement('div')
+    card.className = 'result-card'
+    card.innerHTML = `
+      <div class="result-card-header">
+        <div class="platform-label">
+          <span class="platform-icon">${icon}</span>
+          <span class="platform-name" style="color:${color}">${label}</span>
+        </div>
+        <div class="result-meta">
+          <span class="char-count${over ? ' over' : ''}" id="count-${id}">${text.length} / ${maxLen}字</span>
+          <button class="btn-copy" id="copy-${id}" data-id="${id}">コピー</button>
+        </div>
+      </div>
+      <textarea class="result-textarea" id="textarea-${id}" rows="${rows}">${text}</textarea>
+    `
+    resultsEl.appendChild(card)
+
+    // コピーボタン
+    card.querySelector(`#copy-${id}`).addEventListener('click', () => {
+      const val = card.querySelector(`#textarea-${id}`).value
+      navigator.clipboard.writeText(val).then(() => {
+        const btn = card.querySelector(`#copy-${id}`)
+        btn.textContent = '✅ コピー済み'
+        btn.classList.add('copied')
+        setTimeout(() => {
+          btn.textContent = 'コピー'
+          btn.classList.remove('copied')
+        }, 2000)
+      })
+    })
+
+    // 文字数カウント
+    card.querySelector(`#textarea-${id}`).addEventListener('input', (e) => {
+      const len = e.target.value.length
+      const countEl = card.querySelector(`#count-${id}`)
+      countEl.textContent = `${len} / ${maxLen}字`
+      countEl.className = `char-count${len > maxLen ? ' over' : ''}`
+    })
+  })
+}
+
+btnGen.addEventListener('click', doGenerate)
+btnRetry.addEventListener('click', doGenerate)
+
+// Enterキー対応
+menuInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && menuInput.value.trim()) doGenerate()
+})
+</script>
+</body>
+</html>

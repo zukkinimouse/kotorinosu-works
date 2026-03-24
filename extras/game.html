@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>金華鯖キャッチ | 蔵の庄ミニゲーム</title>
+  <meta name="description" content="石巻港直送の金華鯖をキャッチせよ！蔵の庄のミニゲームで腕試し。">
+  <meta property="og:title" content="金華鯖キャッチ | 蔵の庄">
+  <meta property="og:description" content="落ちてくる金華鯖を籠でキャッチ！スコアをシェアしよう。">
+  <meta property="og:type" content="website">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0d0b08;
+      --fire1:     #ff6b1a;
+      --fire2:     #ffab00;
+      --gold:      #c5a059;
+      --light:     #f0ebe3;
+      --smoke:     rgba(240,235,227,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      font-family: 'Shippori Mincho', serif;
+      color: var(--light);
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* ===== 背景炎エフェクト ===== */
+    .bg-embers {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .ember {
+      position: absolute;
+      bottom: -10px;
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      background: var(--fire1);
+      animation: riseEmber linear infinite;
+      opacity: 0;
+    }
+    @keyframes riseEmber {
+      0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0.8; }
+      50%  { opacity: 0.4; transform: translateY(-40vh) translateX(20px) scale(0.7); }
+      100% { transform: translateY(-80vh) translateX(-10px) scale(0); opacity: 0; }
+    }
+
+    /* ===== 全画面レイアウト ===== */
+    #app {
+      position: relative;
+      width: 100vw; height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    /* ===== タイトル画面 ===== */
+    #screen-title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .title-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.5em;
+      color: var(--gold);
+      border-top: 1px solid rgba(197,160,89,0.3);
+      border-bottom: 1px solid rgba(197,160,89,0.3);
+      padding: 7px 20px;
+    }
+
+    .title-main {
+      font-size: clamp(2.4rem, 10vw, 4rem);
+      font-weight: 700;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffcf72, #c5a059, #ff8c2a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 24px rgba(255,140,42,0.4));
+    }
+
+    .title-fish {
+      font-size: clamp(4rem, 15vw, 7rem);
+      animation: floatFish 3s ease-in-out infinite;
+      filter: drop-shadow(0 8px 16px rgba(255,100,0,0.5));
+    }
+    @keyframes floatFish {
+      0%,100% { transform: translateY(0) rotate(-5deg); }
+      50%      { transform: translateY(-18px) rotate(5deg); }
+    }
+
+    .title-desc {
+      font-size: 0.9rem;
+      color: rgba(240,235,227,0.65);
+      line-height: 2;
+      max-width: 320px;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #ff8c2a, #c5a059);
+      color: #0d0b08;
+      border: none;
+      padding: 18px 56px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      cursor: pointer;
+      border-radius: 2px;
+      box-shadow: 0 4px 24px rgba(255,140,42,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-start:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(255,140,42,0.6); }
+    .btn-start:active { transform: translateY(0); }
+
+    /* ===== ゲーム画面 ===== */
+    #screen-game {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 480px;
+      padding: 16px 24px 8px;
+      flex-shrink: 0;
+    }
+
+    .hud-item { text-align: center; }
+    .hud-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .hud-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--light);
+    }
+    #timer-val { color: var(--fire1); }
+    #timer-val.urgent { animation: timerPulse 0.5s ease infinite; }
+    @keyframes timerPulse {
+      0%,100% { color: var(--fire1); }
+      50%      { color: #fff; transform: scale(1.15); }
+    }
+
+    /* ゲームフィールド */
+    #game-canvas-wrap {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      max-width: 480px;
+      min-height: 300px;
+      overflow: hidden;
+    }
+
+    #game-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* タッチ操作用の左右ボタン（モバイル） */
+    .touch-controls {
+      display: none;
+      width: 100%;
+      max-width: 480px;
+      padding: 12px 20px 20px;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    @media (pointer: coarse) { .touch-controls { display: flex; } }
+
+    .touch-btn {
+      flex: 1;
+      height: 64px;
+      background: rgba(197,160,89,0.15);
+      border: 1px solid rgba(197,160,89,0.3);
+      border-radius: 4px;
+      color: var(--gold);
+      font-size: 1.8rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .touch-btn:active { background: rgba(197,160,89,0.35); }
+
+    /* ===== リザルト画面 ===== */
+    #screen-result {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .result-rank {
+      font-size: 4rem;
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .result-score-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+    }
+    .result-score {
+      font-size: clamp(3rem, 12vw, 5rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffcf72, #c5a059);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .result-msg {
+      font-size: 1rem;
+      color: rgba(240,235,227,0.7);
+      line-height: 2;
+    }
+
+    .result-cta {
+      background: linear-gradient(135deg, #1da1f2, #0e7bb5);
+      color: #fff;
+      border: none;
+      padding: 14px 36px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(29,161,242,0.4);
+      text-decoration: none;
+      display: inline-block;
+    }
+    .result-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(29,161,242,0.55); }
+
+    .btn-retry {
+      background: transparent;
+      border: 1px solid rgba(197,160,89,0.5);
+      color: var(--gold);
+      padding: 12px 36px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+    .btn-retry:hover { background: rgba(197,160,89,0.1); }
+
+    .result-reserve {
+      font-size: 0.8rem;
+      color: rgba(240,235,227,0.5);
+    }
+    .result-reserve a {
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    /* ===== スコアポップアップ ===== */
+    .score-pop {
+      position: absolute;
+      font-size: 1.4rem;
+      font-weight: 700;
+      pointer-events: none;
+      animation: scoreFloat 1s ease-out forwards;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      white-space: nowrap;
+      z-index: 10;
+    }
+    @keyframes scoreFloat {
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-70px) scale(0.7); }
+    }
+
+    /* ===== 戻るリンク ===== */
+    .back-link {
+      position: fixed;
+      top: 16px; left: 20px;
+      z-index: 100;
+      color: rgba(240,235,227,0.45);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<!-- 背景パーティクル -->
+<div class="bg-embers" id="embers"></div>
+
+<a href="index.html" class="back-link">← 蔵の庄 TOP</a>
+
+<div id="app">
+
+  <!-- タイトル画面 -->
+  <div id="screen-title">
+    <p class="title-label">KURANOSHO MINI GAME</p>
+    <div class="title-fish">🐟</div>
+    <h1 class="title-main">金華鯖キャッチ</h1>
+    <p class="title-desc">
+      石巻港直送の金華鯖が空から降ってくる！<br>
+      籠でキャッチして高得点を狙え。<br>
+      <span style="color:var(--fire1)">⚠ 骨や雑魚はミス！</span>
+    </p>
+    <button class="btn-start" id="btn-start">ゲームスタート</button>
+  </div>
+
+  <!-- ゲーム画面 -->
+  <div id="screen-game">
+    <div class="hud">
+      <div class="hud-item">
+        <span class="hud-label">SCORE</span>
+        <span class="hud-value" id="score-val">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">TIME</span>
+        <span class="hud-value" id="timer-val">30</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">MISS</span>
+        <span class="hud-value" id="miss-val">0 / 3</span>
+      </div>
+    </div>
+
+    <div id="game-canvas-wrap">
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <div class="touch-controls">
+      <div class="touch-btn" id="btn-left">◀</div>
+      <div class="touch-btn" id="btn-right">▶</div>
+    </div>
+  </div>
+
+  <!-- リザルト画面 -->
+  <div id="screen-result">
+    <p class="title-label">RESULT</p>
+    <div class="result-rank" id="result-rank">🏆</div>
+    <div>
+      <p class="result-score-label">SCORE</p>
+      <p class="result-score" id="result-score">0</p>
+    </div>
+    <p class="result-msg" id="result-msg">見事な腕前です！</p>
+    <a class="result-cta" id="btn-share" href="#" target="_blank" rel="noopener">
+      🐦 Xでスコアをシェア
+    </a>
+    <button class="btn-retry" id="btn-retry">もう一度挑戦</button>
+    <p class="result-reserve">
+      本物の金華鯖を食べに来ませんか？<br>
+      <a href="index.html#reserve">蔵の庄の予約はこちら →</a>
+    </p>
+  </div>
+
+</div>
+
+<script>
+/* ===== 背景パーティクル ===== */
+(function() {
+  const wrap = document.getElementById('embers');
+  for (let i = 0; i < 24; i++) {
+    const e = document.createElement('div');
+    e.className = 'ember';
+    e.style.left = Math.random() * 100 + 'vw';
+    e.style.animationDuration = (4 + Math.random() * 6) + 's';
+    e.style.animationDelay = (Math.random() * 6) + 's';
+    e.style.width = e.style.height = (2 + Math.random() * 3) + 'px';
+    e.style.background = Math.random() > 0.5 ? '#ff6b1a' : '#ffab00';
+    wrap.appendChild(e);
+  }
+})();
+
+/* ===== ゲームロジック ===== */
+const canvas   = document.getElementById('game-canvas');
+const ctx      = canvas.getContext('2d');
+const gameWrap = document.getElementById('game-canvas-wrap');
+
+const scrTitle  = document.getElementById('screen-title');
+const scrGame   = document.getElementById('screen-game');
+const scrResult = document.getElementById('screen-result');
+const scoreEl   = document.getElementById('score-val');
+const timerEl   = document.getElementById('timer-val');
+const missEl    = document.getElementById('miss-val');
+
+/* キー操作 */
+const keys = { left: false, right: false };
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft'  || e.key === 'a') keys.left  = true;
+  if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true;
+});
+window.addEventListener('keyup', e => {
+  if (e.key === 'ArrowLeft'  || e.key === 'a') keys.left  = false;
+  if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false;
+});
+
+/* タッチボタン */
+function addHold(id, dir) {
+  const el = document.getElementById(id);
+  el.addEventListener('pointerdown',  () => { keys[dir] = true;  });
+  el.addEventListener('pointerup',    () => { keys[dir] = false; });
+  el.addEventListener('pointerleave', () => { keys[dir] = false; });
+  el.addEventListener('pointercancel',() => { keys[dir] = false; });
+}
+addHold('btn-left',  'left');
+addHold('btn-right', 'right');
+
+/* アイテム定義 */
+const ITEMS = [
+  { emoji:'🐟', pts: 30,  prob: 0.30, size: 44, bad: false },
+  { emoji:'🐠', pts: 15,  prob: 0.20, size: 36, bad: false },
+  { emoji:'🍄', pts: 10,  prob: 0.20, size: 32, bad: false },
+  { emoji:'🦐', pts: 20,  prob: 0.15, size: 34, bad: false },
+  { emoji:'🦴', pts:-20,  prob: 0.10, size: 30, bad: true  },
+  { emoji:'💀', pts:-30,  prob: 0.05, size: 32, bad: true  },
+];
+
+function pickItem() {
+  let r = Math.random(), acc = 0;
+  for (const t of ITEMS) { acc += t.prob; if (r < acc) return t; }
+  return ITEMS[0];
+}
+
+/* ゲーム変数 */
+let score, miss, timeLeft, items, pops, basket;
+let rafId = null;
+let timerSI = null;
+let spawnSI = null;
+let gameOver = false;
+
+function stopAll() {
+  gameOver = true;
+  if (rafId)    { cancelAnimationFrame(rafId); rafId = null; }
+  if (timerSI)  { clearInterval(timerSI);  timerSI = null; }
+  if (spawnSI)  { clearInterval(spawnSI);  spawnSI = null; }
+}
+
+function resizeCanvas() {
+  canvas.width  = gameWrap.clientWidth;
+  canvas.height = gameWrap.clientHeight;
+}
+
+/* ===== ゲーム開始 ===== */
+document.getElementById('btn-start').addEventListener('click', startGame);
+document.getElementById('btn-retry').addEventListener('click', startGame);
+
+function startGame() {
+  stopAll();
+
+  score    = 0;
+  miss     = 0;
+  timeLeft = 30;
+  items    = [];
+  pops     = [];
+  gameOver = false;
+
+  scoreEl.textContent = '0';
+  timerEl.textContent = '30';
+  missEl.textContent  = '0 / 3';
+  timerEl.classList.remove('urgent');
+
+  scrTitle.style.display  = 'none';
+  scrResult.style.display = 'none';
+  scrGame.style.display   = 'flex';
+
+  // display:flex が反映されてからcanvasサイズを取得してゲーム開始
+  setTimeout(() => {
+    resizeCanvas();
+    basket = {
+      x: canvas.width / 2,
+      y: canvas.height - 64,
+      w: 90, h: 44, speed: 7,
+    };
+    _startTimerAndLoop();
+  }, 50);
+}
+
+function _startTimerAndLoop() {
+
+  /* タイマー：Date.now()ベースで正確に計測 */
+  const startTime = Date.now();
+  timerSI = setInterval(() => {
+    if (gameOver) return;
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    timeLeft = 30 - elapsed;
+    if (timeLeft < 0) timeLeft = 0;
+    timerEl.textContent = timeLeft;
+    if (timeLeft <= 5) timerEl.classList.add('urgent');
+    if (timeLeft <= 0) { stopAll(); showResult(); }
+  }, 200);
+
+  /* スポーン：確実に1.5秒ごと */
+  spawnSI = setInterval(() => {
+    if (gameOver) return;
+    const diff = 1 + (30 - timeLeft) / 30 * 1.2;
+    const t = pickItem();
+    items.push({
+      x:        t.size / 2 + Math.random() * Math.max(1, canvas.width - t.size),
+      y:        -t.size,
+      speed:    (2.2 + Math.random() * 1.8) * diff,
+      rot:      0,
+      rotSpd:   (Math.random() - 0.5) * 0.05,
+      emoji:    t.emoji,
+      pts:      t.pts,
+      size:     t.size,
+      bad:      t.bad,
+    });
+  }, 1500);
+
+  /* rAFループ */
+  function loop() {
+    if (gameOver) return;
+
+    /* 籠移動 */
+    if (keys.left)  basket.x -= basket.speed;
+    if (keys.right) basket.x += basket.speed;
+    basket.x = Math.max(basket.w / 2, Math.min(canvas.width - basket.w / 2, basket.x));
+
+    /* アイテム更新 */
+    for (let i = items.length - 1; i >= 0; i--) {
+      const it = items[i];
+      it.y   += it.speed;
+      it.rot += it.rotSpd;
+
+      /* 当たり判定 */
+      const inX = it.x > basket.x - basket.w / 2 && it.x < basket.x + basket.w / 2;
+      const inY = it.y > basket.y - basket.h / 2 - 8 && it.y < basket.y + basket.h / 2 + 12;
+      if (inX && inY) {
+        score += it.pts;
+        if (score < 0) score = 0;
+        scoreEl.textContent = score;
+        addPop(it.x, it.y - 24, (it.pts >= 0 ? '+' : '') + it.pts, it.bad ? '#ff5555' : '#ffcf72');
+        items.splice(i, 1);
+        continue;
+      }
+
+      /* 画面外ミス */
+      if (it.y > canvas.height + it.size) {
+        if (!it.bad) {
+          miss++;
+          missEl.textContent = miss + ' / 3';
+          addPop(
+            Math.max(40, Math.min(canvas.width - 40, it.x)),
+            canvas.height - 50, 'ミス！', '#ff6b1a'
+          );
+          if (miss >= 3) { stopAll(); showResult(); return; }
+        }
+        items.splice(i, 1);
+      }
+    }
+
+    /* ポップ更新 */
+    for (let i = pops.length - 1; i >= 0; i--) {
+      pops[i].age++;
+      if (pops[i].age > 50) pops.splice(i, 1);
+    }
+
+    draw();
+    rafId = requestAnimationFrame(loop);
+  }
+
+  rafId = requestAnimationFrame(loop);
+}
+
+function addPop(x, y, text, color) {
+  pops.push({ x, y, text, color, age: 0 });
+}
+
+/* ===== 描画 ===== */
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  /* 背景グラデ */
+  const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  bg.addColorStop(0,   '#0d0b08');
+  bg.addColorStop(0.7, '#1a1005');
+  bg.addColorStop(1,   '#2a1800');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  /* 炎グロー（底部） */
+  const now = Date.now() / 1000;
+  const cx  = canvas.width / 2;
+  const fg  = ctx.createRadialGradient(cx, canvas.height, 0, cx, canvas.height, canvas.width * 0.65);
+  fg.addColorStop(0,   'rgba(255,100,0,0.22)');
+  fg.addColorStop(0.5, 'rgba(180,60,0,0.08)');
+  fg.addColorStop(1,   'rgba(0,0,0,0)');
+  ctx.fillStyle = fg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  /* 炎の舌 */
+  for (let f = 0; f < 5; f++) {
+    const ox  = (f - 2) * 26;
+    const flk = Math.sin(now * 4 + f * 1.4) * 8;
+    const fh  = 55 + Math.sin(now * 3 + f) * 14;
+    const ff  = ctx.createLinearGradient(cx + ox, canvas.height, cx + ox, canvas.height - fh);
+    ff.addColorStop(0, 'rgba(255,80,0,0.65)');
+    ff.addColorStop(1, 'rgba(255,180,0,0)');
+    ctx.beginPath();
+    ctx.ellipse(cx + ox + flk, canvas.height - fh / 2, 13 + f, fh / 2, 0, 0, Math.PI * 2);
+    ctx.fillStyle = ff;
+    ctx.fill();
+  }
+
+  /* アイテム */
+  for (const it of items) {
+    ctx.save();
+    ctx.translate(it.x, it.y);
+    ctx.rotate(it.rot);
+    ctx.font = it.size + 'px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if (it.bad) { ctx.shadowColor = '#ff2020'; ctx.shadowBlur = 10; }
+    ctx.fillText(it.emoji, 0, 0);
+    ctx.restore();
+  }
+
+  /* 籠 */
+  const bx = basket.x, by = basket.y, bw = basket.w, bh = basket.h;
+  ctx.save();
+  ctx.shadowColor = 'rgba(197,160,89,0.5)';
+  ctx.shadowBlur  = 16;
+
+  const bgrad = ctx.createLinearGradient(bx, by - bh/2, bx, by + bh/2);
+  bgrad.addColorStop(0, '#a07840');
+  bgrad.addColorStop(1, '#6b4e20');
+  ctx.beginPath();
+  ctx.moveTo(bx - bw/2 + 6, by - bh/2);
+  ctx.lineTo(bx + bw/2 - 6, by - bh/2);
+  ctx.lineTo(bx + bw/2,     by + bh/2);
+  ctx.lineTo(bx - bw/2,     by + bh/2);
+  ctx.closePath();
+  ctx.fillStyle = bgrad;
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = 'rgba(197,160,89,0.35)';
+  ctx.lineWidth = 0.7;
+  for (let gx = bx - bw/2; gx < bx + bw/2; gx += 11) {
+    ctx.beginPath(); ctx.moveTo(gx, by - bh/2); ctx.lineTo(gx, by + bh/2); ctx.stroke();
+  }
+  for (let gy = by - bh/2; gy < by + bh/2; gy += 9) {
+    ctx.beginPath(); ctx.moveTo(bx - bw/2, gy); ctx.lineTo(bx + bw/2, gy); ctx.stroke();
+  }
+  ctx.strokeStyle = '#c5a059';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(bx - bw/2 + 6, by - bh/2);
+  ctx.lineTo(bx + bw/2 - 6, by - bh/2);
+  ctx.lineTo(bx + bw/2,     by + bh/2);
+  ctx.lineTo(bx - bw/2,     by + bh/2);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.restore();
+
+  /* スコアポップ */
+  for (const p of pops) {
+    const alpha = Math.max(0, 1 - p.age / 50);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = 'bold 22px serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowBlur  = 5;
+    ctx.fillText(p.text, p.x, p.y - p.age * 1.2);
+    ctx.restore();
+  }
+}
+
+/* ===== リザルト ===== */
+function showResult() {
+  scrGame.style.display   = 'none';
+  scrResult.style.display = 'flex';
+  document.getElementById('result-score').textContent = score;
+
+  let rank, msg;
+  if      (score >= 400) { rank = '🏆'; msg = '伝説の腕前！本物の金華鯖も余裕ですね。'; }
+  else if (score >= 250) { rank = '🥇'; msg = '見事なキャッチ！囲炉裏の前で会いましょう。'; }
+  else if (score >= 150) { rank = '🥈'; msg = '惜しい！もう一回挑戦してみては？'; }
+  else if (score >= 80)  { rank = '🥉'; msg = '練習あるのみ。でも本物はもっと旨い！'; }
+  else                   { rank = '🐟'; msg = 'まずは本物の金華鯖で腹ごしらえを。'; }
+
+  document.getElementById('result-rank').textContent = rank;
+  document.getElementById('result-msg').textContent  = msg;
+
+  const text = encodeURIComponent(
+    `蔵の庄ミニゲーム「金華鯖キャッチ」で${score}点！${rank}\n本物の金華鯖が食べたくなった🔥\n#蔵の庄 #仙台グルメ #金華鯖`
+  );
+  document.getElementById('btn-share').href =
+    `https://twitter.com/intent/tweet?text=${text}&url=https%3A%2F%2Fkuranosho.example.com%2Fgame`;
+}
+
+window.addEventListener('resize', () => { if (!gameOver) resizeCanvas(); });
+</script>
+</body>
+</html>

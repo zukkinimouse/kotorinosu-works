@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>杜の雫 | 店舗管理</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set }                  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+                                                      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey:            "AIzaSyA3mmnOzqovyXgYbY_SOaf-rmo9hsu4AGE",
+      authDomain:        "ramen-auto-reserve.firebaseapp.com",
+      projectId:         "ramen-auto-reserve",
+      databaseURL:       "https://ramen-auto-reserve-default-rtdb.asia-southeast1.firebasedatabase.app",
+      storageBucket:     "ramen-auto-reserve.firebasestorage.app",
+      messagingSenderId: "312891189502",
+      appId:             "1:312891189502:web:660e7b0e0f8e5df366ddaf",
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const db   = getDatabase(app);
+    const auth = getAuth(app);
+
+    // DB書き込み（認証済みのみ有効）
+    window._fbSet = (path, data) => set(ref(db, path), data);
+
+    // ログイン
+    window._fbSignIn = async (email, password) => {
+      await signInWithEmailAndPassword(auth, email, password);
+    };
+
+    // ログアウト
+    window._fbSignOut = () => signOut(auth);
+
+    // 認証状態の監視 → 画面の表示切替
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-screen').style.display  = 'flex';
+        document.getElementById('login-user').textContent    = user.email;
+        window._fbReady = true;
+        window.dispatchEvent(new Event('fb-ready'));
+      } else {
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app-screen').style.display  = 'none';
+        window._fbReady = false;
+      }
+    });
+  </script>
+  <style>
+    :root {
+      --primary:      #8B0000;
+      --accent:       #D4AF37;
+      --bg:           #F0EFED;
+      --white:        #ffffff;
+      --text:         #1a1a2e;
+      --sub:          #6b7280;
+      --ok:           #16a34a;
+      --ok-light:     #dcfce7;
+      --warn:         #d97706;
+      --danger:       #dc2626;
+      --danger-light: #fee2e2;
+      --radius:       14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    header h1 { font-family: 'Noto Serif JP', serif; font-size: 1.2rem; letter-spacing: 0.05em; }
+    #clock { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.05em; }
+    #today-label { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; text-align: right; }
+
+    /* ── Summary Bar ── */
+    .summary-bar {
+      background: var(--white);
+      padding: 10px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      border-bottom: 1px solid #e5e7eb;
+      flex-shrink: 0;
+    }
+    .summary-item { display: flex; align-items: baseline; gap: 5px; }
+    .summary-item .big { font-size: 1.6rem; font-weight: 900; line-height: 1; }
+    .summary-item .lbl { font-size: 0.7rem; color: var(--sub); }
+    .big.ok     { color: var(--ok); }
+    .big.warn   { color: var(--warn); }
+    .big.danger { color: var(--danger); }
+    .divider { width: 1px; height: 36px; background: #e5e7eb; margin: 0 4px; }
+    .summary-bar .spacer { flex: 1; }
+    .sync-btn-sm {
+      padding: 10px 20px; border-radius: 10px; border: none;
+      background: var(--primary); color: #fff;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer;
+      font-family: 'Zen Maru Gothic', sans-serif;
+    }
+    .sync-btn-sm:active { opacity: 0.8; }
+    #last-sync { font-size: 0.68rem; color: var(--sub); margin-top: 4px; text-align: right; }
+
+    /* ── Main Layout ── */
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 16px;
+      padding: 16px 24px 24px;
+      flex: 1;
+      align-content: start;
+    }
+
+    /* ── Seat Grid Panel ── */
+    .seat-panel { display: flex; flex-direction: column; gap: 14px; }
+    .section-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .section-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 16px;
+    }
+    .section-header h2 { font-size: 0.9rem; font-weight: 700; color: var(--sub); letter-spacing: 0.1em; }
+    .avail-badge {
+      font-size: 0.8rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+      background: var(--ok-light); color: var(--ok);
+    }
+    .avail-badge.full { background: var(--danger-light); color: var(--danger); }
+
+    /* 席ボタン */
+    .seat-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .seat-btn {
+      aspect-ratio: 1/1;
+      width: 100%;
+      border-radius: 16px;
+      border: 2px solid #e5e7eb;
+      background: var(--white);
+      cursor: pointer;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: all 0.18s;
+      position: relative;
+      font-family: 'Zen Maru Gothic', sans-serif;
+    }
+    .seat-btn:active { transform: scale(0.93); }
+    .seat-btn .seat-num    { font-size: 1.6rem; font-weight: 900; color: #bbb; line-height: 1; }
+    .seat-btn .seat-status { font-size: 0.7rem; color: #ccc; margin-top: 5px; }
+    .seat-btn.taken {
+      background: var(--primary); border-color: var(--primary);
+    }
+    .seat-btn.taken .seat-num    { color: #fff; }
+    .seat-btn.taken .seat-status { color: rgba(255,255,255,0.7); }
+    .seat-btn .elapsed {
+      position: absolute; top: 6px; right: 8px;
+      font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.85);
+    }
+    .seat-btn.over-avg {
+      background: #7f1d1d; border-color: #7f1d1d;
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.3);
+    }
+
+    /* ── サイドパネル ── */
+    .side-panel { display: flex; flex-direction: column; gap: 16px; }
+    .stat-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 18px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .stat-card h3 { font-size: 0.72rem; color: var(--sub); letter-spacing: 0.1em; margin-bottom: 12px; }
+    .stat-row {
+      display: flex; justify-content: space-between;
+      align-items: baseline; padding: 7px 0;
+      border-bottom: 1px solid #f3f4f6; font-size: 0.85rem;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row .val { font-weight: 900; font-size: 1.05rem; }
+
+    /* 待ち管理 */
+    .wait-ctrl { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+    .wait-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 2px solid #e5e7eb; background: var(--white);
+      font-size: 1.3rem; font-weight: 900; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .wait-btn.minus { border-color: var(--danger); color: var(--danger); }
+    .wait-btn.plus  { border-color: var(--ok); color: var(--ok); background: var(--ok-light); }
+    .wait-btn:active { transform: scale(0.9); }
+    .wait-val { font-size: 2.2rem; font-weight: 900; }
+
+    /* ログ */
+    .log-list { max-height: 300px; overflow-y: auto; }
+    .log-item {
+      display: flex; justify-content: space-between;
+      align-items: center; padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6; font-size: 0.78rem;
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-badge {
+      font-size: 0.65rem; font-weight: 700;
+      padding: 2px 7px; border-radius: 5px; margin-right: 6px;
+    }
+    .badge-in  { background: var(--ok-light);     color: var(--ok); }
+    .badge-out { background: var(--danger-light);  color: var(--danger); }
+    .log-time { color: var(--sub); }
+
+    /* ── 退席確認モーダル ── */
+    #modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    #modal-overlay.show { display: flex; }
+    #modal-box {
+      background: var(--white); border-radius: 28px;
+      padding: 48px 48px 44px; width: 560px; text-align: center;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+    }
+    #modal-box h3 {
+      font-size: 1.9rem; font-weight: 900; margin-bottom: 10px;
+      font-family: 'Noto Serif JP', serif;
+      white-space: nowrap; /* 改行させない */
+    }
+    #modal-box p {
+      font-size: 1.1rem; color: var(--sub);
+      margin-bottom: 40px; line-height: 1.7;
+    }
+    .modal-btns {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+    .modal-btns button {
+      width: 120px;
+      height: 160px;
+      border-radius: 16px; border: none;
+      font-size: 1.3rem; font-weight: 700; cursor: pointer;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      writing-mode: vertical-rl;
+      letter-spacing: 0.2em;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .modal-btns button:active { transform: scale(0.96); opacity: 0.85; }
+    #modal-confirm { background: var(--danger); color: #fff; }
+    #modal-cancel  { background: #f0f0f0; color: #888; }
+
+    /* ── ログイン画面 ── */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-box {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 48px 40px;
+      width: 380px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    }
+    .login-box h2 {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.4rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .login-box p {
+      font-size: 0.8rem;
+      color: var(--sub);
+      margin-bottom: 28px;
+    }
+    .login-input {
+      width: 100%; padding: 14px 16px;
+      border: 2px solid #e5e7eb; border-radius: 12px;
+      font-size: 1rem; font-family: 'Zen Maru Gothic', sans-serif;
+      margin-bottom: 12px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-input:focus { border-color: var(--primary); }
+    .login-btn {
+      width: 100%; padding: 15px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      cursor: pointer; margin-top: 4px;
+      transition: opacity 0.2s;
+    }
+    .login-btn:active { opacity: 0.85; }
+    .login-error {
+      color: var(--danger); font-size: 0.8rem;
+      margin-top: 10px; min-height: 20px;
+    }
+
+    /* ── アプリ本体（認証後に表示） ── */
+    #app-screen { flex-direction: column; display: none; min-height: 100vh; }
+    #toast {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: #1a1a2e; color: #fff;
+      padding: 12px 24px; border-radius: 50px;
+      font-size: 0.85rem; font-weight: 700;
+      opacity: 0; transition: all 0.3s; z-index: 9999; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- ログイン画面 -->
+<div id="login-screen">
+  <div class="login-box">
+    <h2>麺処 杜の雫</h2>
+    <p>店舗管理画面 — スタッフ専用</p>
+    <input id="login-email"    class="login-input" type="email"    placeholder="メールアドレス" autocomplete="email">
+    <input id="login-password" class="login-input" type="password" placeholder="パスワード"       autocomplete="current-password">
+    <button class="login-btn" onclick="doLogin()">ログイン</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- アプリ本体（認証後に表示） -->
+<div id="app-screen">
+
+<header>
+  <h1>麺処 杜の雫 ／ 管理画面</h1>
+  <div style="display:flex;align-items:center;gap:20px;">
+    <div>
+      <div id="clock">--:--:--</div>
+      <div id="today-label">読込中...</div>
+    </div>
+    <div style="text-align:right;">
+      <div id="login-user" style="font-size:0.72rem;opacity:0.7;margin-bottom:4px;"></div>
+      <button onclick="doLogout()" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.4);background:transparent;color:#fff;font-size:0.75rem;cursor:pointer;font-family:'Zen Maru Gothic',sans-serif;">ログアウト</button>
+    </div>
+  </div>
+</header>
+
+<div class="summary-bar">
+  <div class="summary-item">
+    <div class="big ok" id="sum-avail">--</div>
+    <div class="lbl">空席</div>
+  </div>
+  <div class="divider"></div>
+  <div class="summary-item">
+    <div class="big warn" id="sum-taken">--</div>
+    <div class="lbl">着席中</div>
+  </div>
+  <div class="divider"></div>
+  <div class="summary-item">
+    <div class="big" id="sum-wait" style="color:var(--text)">0</div>
+    <div class="lbl">待ち組</div>
+  </div>
+  <div class="divider"></div>
+  <div class="summary-item">
+    <div class="big" id="sum-turnover" style="color:var(--primary)">--</div>
+    <div class="lbl">回転目安</div>
+  </div>
+  <div class="divider"></div>
+  <div class="summary-item">
+    <div class="big" id="sum-avg" style="color:var(--sub)">--</div>
+    <div class="lbl">平均滞在</div>
+  </div>
+  <div class="spacer"></div>
+  <div>
+    <button class="sync-btn-sm" onclick="syncToLP()">🔄 LPに反映</button>
+    <div id="last-sync">最終反映: 未反映</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="seat-panel">
+    <div class="section-card">
+      <div class="section-header">
+        <h2>COUNTER — カウンター席</h2>
+        <div class="avail-badge" id="counter-badge">-- 席空き</div>
+      </div>
+      <div class="seat-grid" id="counter-grid"></div>
+    </div>
+    <div class="section-card">
+      <div class="section-header">
+        <h2>TABLE — テーブル席</h2>
+        <div class="avail-badge" id="table-badge">-- 席空き</div>
+      </div>
+      <div class="seat-grid" id="table-grid"></div>
+    </div>
+  </div>
+
+  <div class="side-panel">
+    <div class="stat-card">
+      <h3>⏳ 待ち組数</h3>
+      <div class="wait-ctrl">
+        <button class="wait-btn minus" onclick="adjustWait(-1)">−</button>
+        <div class="wait-val" id="wait-val">0</div>
+        <button class="wait-btn plus"  onclick="adjustWait(+1)">＋</button>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <h3>📊 本日の統計</h3>
+      <div class="stat-row"><span>退席組数</span>      <span class="val" id="stat-count">0</span></div>
+      <div class="stat-row"><span>平均滞在時間</span>  <span class="val" id="stat-avg">-- 分</span></div>
+      <div class="stat-row"><span>7日間平均</span>     <span class="val" id="stat-7day">-- 分</span></div>
+      <div class="stat-row"><span>最混雑時間帯</span>  <span class="val" id="stat-peak">--</span></div>
+    </div>
+
+    <div class="stat-card" style="flex:1;">
+      <h3>📋 操作ログ</h3>
+      <div class="log-list" id="log-list">
+        <p style="color:var(--sub);font-size:0.8rem;padding:16px 0;text-align:center;">記録がありません</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-overlay">
+  <div id="modal-box">
+    <h3 id="modal-title">退席しますか？</h3>
+    <p id="modal-body"></p>
+    <div class="modal-btns">
+      <button id="modal-cancel"  onclick="closeModal()">キャンセル</button>
+      <button id="modal-confirm" onclick="confirmCheckout()">退席する</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#app-screen -->
+
+<div id="toast"></div>
+
+<script>
+  // ── ログイン・ログアウト ──
+  async function doLogin() {
+    const email    = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errEl    = document.getElementById('login-error');
+    errEl.textContent = '';
+    try {
+      await window._fbSignIn(email, password);
+    } catch(e) {
+      errEl.textContent = 'メールアドレスまたはパスワードが違います';
+    }
+  }
+
+  function doLogout() {
+    if (confirm('ログアウトしますか？')) window._fbSignOut();
+  }
+
+  // Enterキーでログイン
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+      doLogin();
+    }
+  });
+  const CONFIG = {
+    COUNTER_SEATS:    6,
+    TABLE_SEATS:      12,
+    AVG_STAY_DEFAULT: 25,
+  };
+
+  // ── 状態 ──
+  const state = {
+    seats: { counter: {}, table: {} },
+    waitGroups: 0,
+    history: [],
+  };
+  for (let i = 1; i <= CONFIG.COUNTER_SEATS; i++) state.seats.counter[i] = null;
+  for (let i = 1; i <= CONFIG.TABLE_SEATS;   i++) state.seats.table[i]   = null;
+
+  let pendingCheckout = null;
+
+  // ── 着席・退席 ──
+  function tapSeat(type, num) {
+    if (state.seats[type][num] === null) {
+      // 空席 → 即着席
+      state.seats[type][num] = { checkinAt: Date.now() };
+      addLog(type, num, 'in', null);
+      render();
+      syncToFirebase();
+      toast(`✅ ${seatLabel(type, num)} 着席`);
+    } else {
+      // 着席中 → 確認モーダル
+      const elapsed = Math.floor((Date.now() - state.seats[type][num].checkinAt) / 60000);
+      pendingCheckout = { type, num };
+      document.getElementById('modal-title').textContent = `${seatLabel(type, num)} — 退席しますか？`;
+      document.getElementById('modal-body').textContent  = `滞在時間: ${elapsed}分`;
+      document.getElementById('modal-overlay').classList.add('show');
+    }
+  }
+
+  function confirmCheckout() {
+    if (!pendingCheckout) return;
+    const { type, num } = pendingCheckout;
+    const seat = state.seats[type][num];
+    if (!seat) { closeModal(); return; }
+
+    const stayMin = Math.round((Date.now() - seat.checkinAt) / 60000);
+    state.seats[type][num] = null;
+    addLog(type, num, 'out', stayMin);
+    saveStayData(stayMin);
+
+    // 待ちがあれば同じ席へ自動案内
+    if (state.waitGroups > 0) {
+      state.waitGroups--;
+      state.seats[type][num] = { checkinAt: Date.now() };
+      addLog(type, num, 'in', null);
+      toast(`🔄 ${seatLabel(type, num)} 待ちグループを案内（前客: ${stayMin}分）`);
+    } else {
+      toast(`🚪 ${seatLabel(type, num)} 退席（${stayMin}分）`);
+    }
+
+    pendingCheckout = null;
+    closeModal();
+    render();
+    syncToFirebase();
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('show');
+    pendingCheckout = null;
+  }
+
+  function adjustWait(delta) {
+    const next = state.waitGroups + delta;
+    if (next < 0) return;
+    state.waitGroups = next;
+    render();
+    syncToFirebase();
+    toast(delta > 0 ? '➕ 待ち追加' : '➖ 待ち減らしました');
+  }
+
+  function seatLabel(type, num) {
+    return type === 'counter' ? `カウンター ${num}番` : `テーブル ${num}番`;
+  }
+
+  // ── ログ ──
+  function addLog(type, num, action, stayMin) {
+    state.history.unshift({ type, num, action, at: new Date(), stayMin });
+    if (state.history.length > 100) state.history.pop();
+  }
+
+  // ── 統計（学習ロジック） ──
+  function calcAvgStay() {
+    const done = state.history.filter(h => h.action === 'out' && h.stayMin !== null);
+    if (done.length === 0) return CONFIG.AVG_STAY_DEFAULT;
+    return Math.round(done.reduce((a, b) => a + b.stayMin, 0) / done.length);
+  }
+
+  function calcTurnover() {
+    const avail = countAvail();
+    const avg   = calcAvgStay();
+    const wait  = state.waitGroups;
+    if (avail > 0 && wait === 0) return '空席あり';
+    const total = CONFIG.COUNTER_SEATS + CONFIG.TABLE_SEATS;
+    const min   = Math.ceil((wait + 1) * avg / Math.max(1, Math.floor(total / 2)));
+    return `約${min}分`;
+  }
+
+  function countAvail() {
+    return Object.values(state.seats.counter).filter(s => s === null).length
+         + Object.values(state.seats.table).filter(s => s === null).length;
+  }
+
+  function countTaken() {
+    return Object.values(state.seats.counter).filter(s => s !== null).length
+         + Object.values(state.seats.table).filter(s => s !== null).length;
+  }
+
+  function calcPeakHour() {
+    const outs = state.history.filter(h => h.action === 'out');
+    if (!outs.length) return '--';
+    const counts = {};
+    outs.forEach(h => { const hr = h.at.getHours(); counts[hr] = (counts[hr] || 0) + 1; });
+    const peak = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    return peak ? `${peak[0]}時台` : '--';
+  }
+
+  // ── 描画 ──
+  function render() {
+    const avail = countAvail();
+    const taken = countTaken();
+    const avg   = calcAvgStay();
+    const done  = state.history.filter(h => h.action === 'out' && h.stayMin !== null);
+    const all7  = loadAllHistory();
+
+    // サマリー
+    document.getElementById('sum-avail').textContent    = avail;
+    document.getElementById('sum-taken').textContent    = taken;
+    document.getElementById('sum-wait').textContent     = state.waitGroups;
+    document.getElementById('sum-turnover').textContent = calcTurnover();
+    document.getElementById('sum-avg').textContent      = done.length ? `${avg}分` : '--';
+
+    // グリッド
+    renderGrid('counter', CONFIG.COUNTER_SEATS);
+    renderGrid('table',   CONFIG.TABLE_SEATS);
+
+    // バッジ
+    ['counter', 'table'].forEach(type => {
+      const a = Object.values(state.seats[type]).filter(s => s === null).length;
+      const b = document.getElementById(`${type}-badge`);
+      b.textContent = `${a} 席空き`;
+      b.className   = `avail-badge${a === 0 ? ' full' : ''}`;
+    });
+
+    // 待ち
+    document.getElementById('wait-val').textContent = state.waitGroups;
+
+    // 統計
+    document.getElementById('stat-count').textContent = done.length;
+    document.getElementById('stat-avg').textContent   = done.length ? `${avg} 分` : '-- 分';
+    document.getElementById('stat-7day').textContent  = all7.length
+      ? `${Math.round(all7.reduce((a,b)=>a+b,0)/all7.length)} 分` : '-- 分';
+    document.getElementById('stat-peak').textContent  = calcPeakHour();
+
+    renderLog();
+  }
+
+  function renderGrid(type, total) {
+    const avg  = calcAvgStay();
+    const grid = document.getElementById(`${type}-grid`);
+    grid.style.gridTemplateColumns = `repeat(6, 1fr)`;
+    grid.innerHTML = '';
+    for (let num = 1; num <= total; num++) {
+      const seat    = state.seats[type][num];
+      const taken   = seat !== null;
+      const elapsed = taken ? Math.floor((Date.now() - seat.checkinAt) / 60000) : 0;
+      const overAvg = taken && elapsed >= avg;
+
+      const btn = document.createElement('button');
+      btn.className = `seat-btn${taken ? ' taken' : ''}${overAvg ? ' over-avg' : ''}`;
+      btn.innerHTML = `
+        ${taken ? `<span class="elapsed">${elapsed}分</span>` : ''}
+        <span class="seat-num">${num}</span>
+        <span class="seat-status">${taken ? '着席中' : '空席'}</span>`;
+      btn.onclick = () => tapSeat(type, num);
+      grid.appendChild(btn);
+    }
+  }
+
+  function renderLog() {
+    const el = document.getElementById('log-list');
+    if (!state.history.length) {
+      el.innerHTML = '<p style="color:var(--sub);font-size:0.8rem;padding:16px 0;text-align:center;">記録がありません</p>';
+      return;
+    }
+    el.innerHTML = state.history.slice(0, 40).map(h => `
+      <div class="log-item">
+        <div>
+          <span class="log-badge ${h.action === 'in' ? 'badge-in' : 'badge-out'}">${h.action === 'in' ? '着席' : '退席'}</span>
+          ${h.type === 'counter' ? `C-${h.num}` : `T-${h.num}`}
+          ${h.stayMin !== null ? `<span style="color:var(--sub);font-size:0.72rem;"> ${h.stayMin}分</span>` : ''}
+        </div>
+        <span class="log-time">${formatTime(h.at)}</span>
+      </div>`).join('');
+  }
+
+  // ── Firebase同期（状態変化のたびに自動呼び出し） ──
+  function syncToFirebase() {
+    if (!window._fbReady) return;
+    const cAvail = Object.values(state.seats.counter).filter(s => s === null).length;
+    const tAvail = Object.values(state.seats.table).filter(s => s === null).length;
+    const payload = {
+      counter:    { available: cAvail, total: CONFIG.COUNTER_SEATS, waitGroups: 0 },
+      table:      { available: tAvail, total: CONFIG.TABLE_SEATS,   waitGroups: state.waitGroups },
+      avgStayMin: calcAvgStay(),
+      updatedAt:  Date.now(),
+    };
+    window._fbSet('seats', payload)
+      .then(() => {
+        document.getElementById('last-sync').textContent = `最終反映: ${formatTime(new Date())}`;
+      })
+      .catch(() => toast('⚠️ Firebase同期失敗'));
+  }
+
+  // ボタンから呼ばれる（手動反映も残す）
+  function syncToLP() {
+    syncToFirebase();
+    toast('✅ LPに反映しました');
+  }
+
+  // ── 7日間蓄積 ──
+  function saveStayData(stayMin) {
+    try {
+      const raw   = JSON.parse(localStorage.getItem('mori_stay_history') || '[]');
+      const week  = 7 * 24 * 60 * 60 * 1000;
+      const fresh = raw.filter(d => Date.now() - d.at < week);
+      fresh.push({ stayMin, at: Date.now() });
+      localStorage.setItem('mori_stay_history', JSON.stringify(fresh));
+    } catch(e) {}
+  }
+
+  function loadAllHistory() {
+    try {
+      const raw  = JSON.parse(localStorage.getItem('mori_stay_history') || '[]');
+      const week = 7 * 24 * 60 * 60 * 1000;
+      return raw.filter(d => Date.now() - d.at < week).map(d => d.stayMin);
+    } catch(e) { return []; }
+  }
+
+  // ── ユーティリティ ──
+  function formatTime(d) {
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2400);
+  }
+
+  // ── 時計 & 自動再描画 ──
+  setInterval(() => { render(); }, 10000);
+  setInterval(() => {
+    const now  = new Date();
+    const days = ['日','月','火','水','木','金','土'];
+    document.getElementById('clock').textContent =
+      `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    document.getElementById('today-label').textContent =
+      `${now.getMonth()+1}/${now.getDate()}（${days[now.getDay()]}）`;
+  }, 1000);
+
+  // ── 初期化 ──
+  (() => {
+    const now  = new Date();
+    const days = ['日','月','火','水','木','金','土'];
+    document.getElementById('clock').textContent =
+      `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    document.getElementById('today-label').textContent =
+      `${now.getMonth()+1}/${now.getDate()}（${days[now.getDay()]}）`;
+    render();
+  })();
+</script>
+</body>
+</html>
