@@ -952,6 +952,67 @@ section { padding: 72px 24px; }
 }
 
 /* =============================================
+   TAB UI
+   ============================================= */
+.tab-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--line);
+  margin-bottom: 32px;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text3);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.tab-btn:hover { color: var(--text2); }
+.tab-btn.active {
+  color: var(--moss2);
+  border-bottom-color: var(--moss2);
+}
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 0.62rem;
+  background: var(--bg3);
+  color: var(--text3);
+  border-radius: 100px;
+  transition: background 0.2s, color 0.2s;
+}
+.tab-btn.active .tab-count {
+  background: var(--moss2);
+  color: var(--bg);
+}
+
+.tab-panel { display: block; }
+.tab-panel.hidden { display: none; }
+
+.tab-desc {
+  font-size: 0.83rem;
+  color: var(--text2);
+  line-height: 2;
+  margin-bottom: 32px;
+  max-width: 360px;
+}
+
+/* =============================================
    ANIMATIONS
    ============================================= */
 @keyframes fadeUp {
@@ -1093,200 +1154,212 @@ section { padding: 72px 24px; }
   </div>
 </section>
 
-<!-- WORKS -->
+<!-- WORKS + EXTRA（タブ統合） -->
 <section id="works">
-  <span class="section-label">Works</span>
-  <h2 class="section-title">制作実績</h2>
-  <p class="section-sub">架空のお店でのビフォーアフターデモです。「うちもこんな風に」と思ったらぜひご相談ください。</p>
+  <span class="section-label">Works & Extra</span>
+  <h2 class="section-title">制作実績・おまけ機能</h2>
   <div class="divider"></div>
 
-  <div class="works-grid">
-
-    <!-- 居酒屋 -->
-    <div class="work-item">
-      <div class="work-after">
-        <span class="work-after-label">After</span>
-        <iframe src="works/irori/after.html" title="仙台酒場 いろり" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        <a href="works/irori/after.html" target="_blank" class="work-link-overlay" aria-label="居酒屋デモを見る">
-          <span class="work-link-btn">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            デモを開く
-          </span>
-        </a>
-      </div>
-      <div class="work-info">
-        <p class="work-genre">Izakaya</p>
-        <h3 class="work-name">仙台酒場 いろり</h3>
-        <p class="work-detail">国分町・炭火焼き・宮城の地酒</p>
-        <div class="work-tags">
-          <span class="work-tag">ダーク</span>
-          <span class="work-tag">和モダン</span>
-          <span class="work-tag">炭火パーティクル</span>
-          <span class="work-tag">パララックス</span>
-        </div>
-        <button class="before-toggle" onclick="toggleBefore(this)">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          ビフォーも見る
-        </button>
-        <div class="before-panel">
-          <span class="before-panel-label">Before</span>
-          <iframe src="works/irori/before.html" title="居酒屋 Before" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        </div>
-      </div>
-    </div>
-
-    <!-- カフェ -->
-    <div class="work-item">
-      <div class="work-after">
-        <span class="work-after-label">After</span>
-        <iframe src="works/cafe/after.html" title="喫茶こもれび" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        <a href="works/cafe/after.html" target="_blank" class="work-link-overlay" aria-label="カフェデモを見る">
-          <span class="work-link-btn">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            デモを開く
-          </span>
-        </a>
-      </div>
-      <div class="work-info">
-        <p class="work-genre">Café</p>
-        <h3 class="work-name">喫茶こもれび</h3>
-        <p class="work-detail">定禅寺通り・エディトリアル風</p>
-        <div class="work-tags">
-          <span class="work-tag">オフホワイト</span>
-          <span class="work-tag">縦書きヒーロー</span>
-          <span class="work-tag">スクロール演出</span>
-        </div>
-        <button class="before-toggle" onclick="toggleBefore(this)">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          ビフォーも見る
-        </button>
-        <div class="before-panel">
-          <span class="before-panel-label">Before</span>
-          <iframe src="works/cafe/before.html" title="カフェ Before" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        </div>
-      </div>
-    </div>
-
-    <!-- ケーキ屋 -->
-    <div class="work-item">
-      <div class="work-after">
-        <span class="work-after-label">After</span>
-        <iframe src="works/cake/after.html" title="焼き菓子と喫茶 ひだまり" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        <a href="works/cake/after.html" target="_blank" class="work-link-overlay" aria-label="ケーキ屋デモを見る">
-          <span class="work-link-btn">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            デモを開く
-          </span>
-        </a>
-      </div>
-      <div class="work-info">
-        <p class="work-genre">Cake Shop</p>
-        <h3 class="work-name">焼き菓子と喫茶 ひだまり</h3>
-        <p class="work-detail">長町・手作り焼き菓子・日常使い</p>
-        <div class="work-tags">
-          <span class="work-tag">クラフト</span>
-          <span class="work-tag">コラージュ風</span>
-          <span class="work-tag">手書き英字</span>
-        </div>
-        <button class="before-toggle" onclick="toggleBefore(this)">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          ビフォーも見る
-        </button>
-        <div class="before-panel">
-          <span class="before-panel-label">Before</span>
-          <iframe src="works/cake/before.html" title="ケーキ屋 Before" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        </div>
-      </div>
-    </div>
-
+  <!-- タブナビ -->
+  <div class="tab-nav" role="tablist">
+    <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="tab-works" onclick="switchTab('works', this)">
+      制作実績
+      <span class="tab-count">3</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-extra" onclick="switchTab('extra', this)">
+      おまけ機能
+      <span class="tab-count">3</span>
+    </button>
   </div>
-</section>
 
-<!-- EXTRA（おまけ機能） -->
-<section id="extra">
-  <span class="section-label">Extra</span>
-  <h2 class="section-title">おまけ機能</h2>
-  <p class="section-sub">LP制作に加えて、こんな機能も作れます。お店の個性や用途に合わせてご相談ください。</p>
-  <div class="divider"></div>
+  <!-- 制作実績パネル -->
+  <div class="tab-panel" id="tab-works" role="tabpanel">
+    <p class="tab-desc">架空のお店でのビフォーアフターデモです。「うちもこんな風に」と思ったらぜひご相談ください。</p>
+    <div class="works-grid">
 
-  <div class="works-grid">
-
-    <!-- 席管理システム -->
-    <div class="work-item">
-      <div class="work-after">
-        <span class="work-after-label">Demo</span>
-        <iframe src="extras/admin.html" title="席管理システム" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        <a href="extras/admin.html" target="_blank" class="work-link-overlay" aria-label="席管理システムのデモを見る">
-          <span class="work-link-btn">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            デモを開く
-          </span>
-        </a>
-      </div>
-      <div class="work-info">
-        <p class="work-genre">Store Management</p>
-        <h3 class="work-name">リアルタイム席管理システム</h3>
-        <p class="work-detail">着席・退席をタップで管理、LPに空席状況を自動反映</p>
-        <div class="work-tags">
-          <span class="work-tag">Firebase連携</span>
-          <span class="work-tag">リアルタイム同期</span>
-          <span class="work-tag">スタッフ専用ログイン</span>
-          <span class="work-tag">滞在時間分析</span>
+      <!-- 居酒屋 -->
+      <div class="work-item">
+        <div class="work-after">
+          <span class="work-after-label">After</span>
+          <iframe src="works/irori/after.html" title="仙台酒場 いろり" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          <a href="works/irori/after.html" target="_blank" class="work-link-overlay" aria-label="居酒屋デモを見る">
+            <span class="work-link-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              デモを開く
+            </span>
+          </a>
+        </div>
+        <div class="work-info">
+          <p class="work-genre">Izakaya</p>
+          <h3 class="work-name">仙台酒場 いろり</h3>
+          <p class="work-detail">国分町・炭火焼き・宮城の地酒</p>
+          <div class="work-tags">
+            <span class="work-tag">ダーク</span>
+            <span class="work-tag">和モダン</span>
+            <span class="work-tag">炭火パーティクル</span>
+            <span class="work-tag">パララックス</span>
+          </div>
+          <button class="before-toggle" onclick="toggleBefore(this)">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            ビフォーも見る
+          </button>
+          <div class="before-panel">
+            <span class="before-panel-label">Before</span>
+            <iframe src="works/irori/before.html" title="居酒屋 Before" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- SNS投稿AIツール -->
-    <div class="work-item">
-      <div class="work-after">
-        <span class="work-after-label">Demo</span>
-        <iframe src="extras/post-tool.html" title="SNS投稿AI生成ツール" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        <a href="extras/post-tool.html" target="_blank" class="work-link-overlay" aria-label="SNS投稿AIツールのデモを見る">
-          <span class="work-link-btn">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            デモを開く
-          </span>
-        </a>
-      </div>
-      <div class="work-info">
-        <p class="work-genre">AI Tool</p>
-        <h3 class="work-name">SNS投稿 AI生成ツール</h3>
-        <p class="work-detail">メニュー情報を入れるだけでX・Instagram・LINE用の文章を自動生成</p>
-        <div class="work-tags">
-          <span class="work-tag">Claude API</span>
-          <span class="work-tag">3媒体同時生成</span>
-          <span class="work-tag">文字数チェック</span>
-          <span class="work-tag">コピー機能</span>
+      <!-- カフェ -->
+      <div class="work-item">
+        <div class="work-after">
+          <span class="work-after-label">After</span>
+          <iframe src="works/cafe/after.html" title="喫茶こもれび" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          <a href="works/cafe/after.html" target="_blank" class="work-link-overlay" aria-label="カフェデモを見る">
+            <span class="work-link-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              デモを開く
+            </span>
+          </a>
+        </div>
+        <div class="work-info">
+          <p class="work-genre">Café</p>
+          <h3 class="work-name">喫茶こもれび</h3>
+          <p class="work-detail">定禅寺通り・エディトリアル風</p>
+          <div class="work-tags">
+            <span class="work-tag">オフホワイト</span>
+            <span class="work-tag">縦書きヒーロー</span>
+            <span class="work-tag">スクロール演出</span>
+          </div>
+          <button class="before-toggle" onclick="toggleBefore(this)">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            ビフォーも見る
+          </button>
+          <div class="before-panel">
+            <span class="before-panel-label">Before</span>
+            <iframe src="works/cafe/before.html" title="カフェ Before" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- ミニゲーム -->
-    <div class="work-item">
-      <div class="work-after">
-        <span class="work-after-label">Demo</span>
-        <iframe src="extras/game.html" title="集客ミニゲーム" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
-        <a href="extras/game.html" target="_blank" class="work-link-overlay" aria-label="ミニゲームのデモを見る">
-          <span class="work-link-btn">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            デモを開く
-          </span>
-        </a>
-      </div>
-      <div class="work-info">
-        <p class="work-genre">Engagement Game</p>
-        <h3 class="work-name">集客ミニゲーム</h3>
-        <p class="work-detail">SNSでシェアしたくなる、お店オリジナルのブラウザゲーム</p>
-        <div class="work-tags">
-          <span class="work-tag">スコアシェア機能</span>
-          <span class="work-tag">スマホ対応</span>
-          <span class="work-tag">お店テーマにカスタム可</span>
-          <span class="work-tag">予約導線つき</span>
+      <!-- ケーキ屋 -->
+      <div class="work-item">
+        <div class="work-after">
+          <span class="work-after-label">After</span>
+          <iframe src="works/cake/after.html" title="焼き菓子と喫茶 ひだまり" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          <a href="works/cake/after.html" target="_blank" class="work-link-overlay" aria-label="ケーキ屋デモを見る">
+            <span class="work-link-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              デモを開く
+            </span>
+          </a>
+        </div>
+        <div class="work-info">
+          <p class="work-genre">Cake Shop</p>
+          <h3 class="work-name">焼き菓子と喫茶 ひだまり</h3>
+          <p class="work-detail">長町・手作り焼き菓子・日常使い</p>
+          <div class="work-tags">
+            <span class="work-tag">クラフト</span>
+            <span class="work-tag">コラージュ風</span>
+            <span class="work-tag">手書き英字</span>
+          </div>
+          <button class="before-toggle" onclick="toggleBefore(this)">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            ビフォーも見る
+          </button>
+          <div class="before-panel">
+            <span class="before-panel-label">Before</span>
+            <iframe src="works/cake/before.html" title="ケーキ屋 Before" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
+
+  <!-- おまけ機能パネル -->
+  <div class="tab-panel hidden" id="tab-extra" role="tabpanel">
+    <p class="tab-desc">LP制作に加えて、こんな機能も作れます。お店の個性や用途に合わせてご相談ください。</p>
+    <div class="works-grid">
+
+      <!-- 席管理システム -->
+      <div class="work-item">
+        <div class="work-after">
+          <span class="work-after-label">Demo</span>
+          <iframe src="extras/admin.html" title="席管理システム" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          <a href="extras/admin.html" target="_blank" class="work-link-overlay" aria-label="席管理システムのデモを見る">
+            <span class="work-link-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              デモを開く
+            </span>
+          </a>
+        </div>
+        <div class="work-info">
+          <p class="work-genre">Store Management</p>
+          <h3 class="work-name">リアルタイム席管理システム</h3>
+          <p class="work-detail">着席・退席をタップで管理、LPに空席状況を自動反映</p>
+          <div class="work-tags">
+            <span class="work-tag">Firebase連携</span>
+            <span class="work-tag">リアルタイム同期</span>
+            <span class="work-tag">スタッフ専用ログイン</span>
+            <span class="work-tag">滞在時間分析</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SNS投稿AIツール -->
+      <div class="work-item">
+        <div class="work-after">
+          <span class="work-after-label">Demo</span>
+          <iframe src="extras/post-tool.html" title="SNS投稿AI生成ツール" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          <a href="extras/post-tool.html" target="_blank" class="work-link-overlay" aria-label="SNS投稿AIツールのデモを見る">
+            <span class="work-link-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              デモを開く
+            </span>
+          </a>
+        </div>
+        <div class="work-info">
+          <p class="work-genre">AI Tool</p>
+          <h3 class="work-name">SNS投稿 AI生成ツール</h3>
+          <p class="work-detail">メニュー情報を入れるだけでX・Instagram・LINE用の文章を自動生成</p>
+          <div class="work-tags">
+            <span class="work-tag">Claude API</span>
+            <span class="work-tag">3媒体同時生成</span>
+            <span class="work-tag">文字数チェック</span>
+            <span class="work-tag">コピー機能</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ミニゲーム -->
+      <div class="work-item">
+        <div class="work-after">
+          <span class="work-after-label">Demo</span>
+          <iframe src="extras/game.html" title="集客ミニゲーム" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+          <a href="extras/game.html" target="_blank" class="work-link-overlay" aria-label="ミニゲームのデモを見る">
+            <span class="work-link-btn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M10 2h4v4M14 2 8 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              デモを開く
+            </span>
+          </a>
+        </div>
+        <div class="work-info">
+          <p class="work-genre">Engagement Game</p>
+          <h3 class="work-name">集客ミニゲーム</h3>
+          <p class="work-detail">SNSでシェアしたくなる、お店オリジナルのブラウザゲーム</p>
+          <div class="work-tags">
+            <span class="work-tag">スコアシェア機能</span>
+            <span class="work-tag">スマホ対応</span>
+            <span class="work-tag">お店テーマにカスタム可</span>
+            <span class="work-tag">予約導線つき</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </section>
 
 <!-- SERVICES -->
@@ -1587,6 +1660,22 @@ async function handleSubmit(e) {
       btn.style.color = '';
     }, 4000);
   }
+}
+
+/* =============================================
+   タブ切り替え
+   ============================================= */
+function switchTab(id, btn) {
+  // パネル切り替え
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById('tab-' + id).classList.remove('hidden');
+  // ボタン状態
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
 }
 </script>
 
