@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>焼き菓子と喫茶 ひだまり｜仙台・長町｜手作りケーキ・焼き菓子・コーヒー</title>
+<style>
+  /* ==============================
+     リニューアル前のホームページ
+     ============================== */
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff5f8;
+    color: #333;
+    font-family: "ＭＳ Ｐゴシック", "MS PGothic", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 14px;
+  }
+
+  /* トップのピンクバナー */
+  .top-banner {
+    background: #e8739a;
+    color: white;
+    text-align: center;
+    padding: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+  }
+
+  /* ヘッダー */
+  #header {
+    background: linear-gradient(180deg, #f7b7cc 0%, #f48faf 50%, #e8739a 100%);
+    padding: 0;
+    border-bottom: 4px solid #f9d6e2;
+  }
+
+  #header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px 20px 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+
+  .header-logo {
+    background: #fffafc;
+    border: 3px solid #f7b7cc;
+    padding: 14px 22px;
+    text-align: center;
+    min-width: 180px;
+    box-shadow: 2px 2px 6px rgba(232,115,154,0.2);
+  }
+
+  .header-logo .shop-name-en {
+    font-size: 10px;
+    color: #c45a82;
+    letter-spacing: 0.2em;
+    display: block;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .header-logo .shop-name-ja {
+    font-size: 30px;
+    font-weight: bold;
+    color: #c45a82;
+    display: block;
+    line-height: 1;
+    font-family: "ＭＳ Ｐ明朝", "MS PMincho", "Hiragino Mincho ProN", serif;
+    letter-spacing: 0.15em;
+  }
+
+  .header-logo .shop-name-sub {
+    font-size: 11px;
+    color: #e8739a;
+    display: block;
+    margin-top: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  .header-catch {
+    color: #5a1530;
+    font-size: 13px;
+    line-height: 1.9;
+    padding-bottom: 16px;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+  }
+
+  .header-catch .big {
+    font-size: 19px;
+    display: block;
+    font-family: "ＭＳ Ｐ明朝", "MS PMincho", "Hiragino Mincho ProN", serif;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  /* グローバルナビ */
+  #gnav {
+    background: #e8739a;
+    border-bottom: 2px solid #f9d6e2;
+  }
+
+  #gnav ul {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    display: flex;
+  }
+
+  #gnav ul li a {
+    display: block;
+    padding: 11px 18px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    border-right: 1px solid rgba(255,255,255,0.3);
+    letter-spacing: 0.08em;
+  }
+
+  #gnav ul li:first-child a {
+    border-left: 1px solid rgba(255,255,255,0.3);
+  }
+
+  #gnav ul li a:hover {
+    background: #d45a86;
+    text-decoration: underline;
+  }
+
+  /* メインレイアウト */
+  #container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  #main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #sidebar {
+    width: 200px;
+    flex-shrink: 0;
+  }
+
+  /* お知らせボックス */
+  .news-box {
+    background: #fffafc;
+    border: 2px solid #f7b7cc;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+
+  .news-box h2 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #c45a82;
+    border-bottom: 1px dashed #f7b7cc;
+    padding-bottom: 6px;
+    font-weight: bold;
+  }
+
+  .news-box ul {
+    margin: 0;
+    padding: 0 0 0 16px;
+    font-size: 13px;
+    line-height: 2.1;
+  }
+
+  .news-box ul li span.date {
+    color: #999;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+
+  .new-badge {
+    background: #e8739a;
+    color: white;
+    font-size: 10px;
+    padding: 1px 5px;
+    margin-left: 4px;
+    font-weight: bold;
+  }
+
+  /* メインビジュアル */
+  .main-visual {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 40%, #f48fb1 100%);
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    border: 3px solid #f7b7cc;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ♥ハートのデコレーション */
+  .main-visual::before {
+    content: '♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥';
+    position: absolute;
+    top: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(232,115,154,0.4);
+    letter-spacing: 4px;
+  }
+
+  .main-visual::after {
+    content: '♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥ ♡ ♥';
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(232,115,154,0.4);
+    letter-spacing: 4px;
+  }
+
+  .main-visual-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+    animation: float 2.5s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .main-visual-text {
+    color: #8b1a42;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: "ＭＳ Ｐ明朝", "MS PMincho", "Hiragino Mincho ProN", serif;
+    text-align: center;
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+  }
+
+  .main-visual-sub {
+    color: #c45a82;
+    font-size: 12px;
+    margin-top: 8px;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+
+  /* コンテンツボックス */
+  .content-box {
+    background: white;
+    border: 1px solid #f7b7cc;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .content-box h2 {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    font-weight: bold;
+    color: #c45a82;
+    background: #fff5f8;
+    border-left: 4px solid #e8739a;
+    padding: 6px 10px;
+  }
+
+  .content-box p {
+    font-size: 13px;
+    line-height: 1.9;
+    color: #444;
+    margin: 0 0 8px 0;
+  }
+
+  /* メニュー表 */
+  .menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .menu-table th {
+    background: #e8739a;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .menu-table td {
+    padding: 8px 12px;
+    border-bottom: 1px dotted #f7b7cc;
+    vertical-align: top;
+  }
+
+  .menu-table tr:nth-child(even) td {
+    background: #fff5f8;
+  }
+
+  .menu-table tr:hover td {
+    background: #fce4ec;
+  }
+
+  .menu-price {
+    white-space: nowrap;
+    color: #c45a82;
+    font-weight: bold;
+    text-align: right;
+  }
+
+  /* ケーキ写真ギャラリー（枠だけ） */
+  .photo-gallery {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .photo-thumb {
+    width: 120px;
+    height: 90px;
+    background: #fce4ec;
+    border: 2px solid #f7b7cc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #999;
+    gap: 4px;
+  }
+
+  .photo-thumb .photo-icon {
+    font-size: 24px;
+    display: block;
+  }
+
+  /* アクセス地図枠 */
+  .access-map {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 13px;
+    margin-top: 10px;
+    gap: 6px;
+  }
+
+  /* サイドバー */
+  .sidebar-box {
+    background: #fffafc;
+    border: 1px solid #f7b7cc;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .sidebar-box h3 {
+    margin: 0;
+    background: #f7b7cc;
+    color: #5a1530;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 7px 10px;
+  }
+
+  .sidebar-box-inner {
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #555;
+  }
+
+  .sidebar-box-inner .tel {
+    font-size: 18px;
+    font-weight: bold;
+    color: #c45a82;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-box-inner .label {
+    color: #c45a82;
+    font-weight: bold;
+  }
+
+  .reserve-btn {
+    display: block;
+    background: #e8739a;
+    color: white;
+    text-align: center;
+    padding: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 12px;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .reserve-btn:hover {
+    background: #d45a86;
+  }
+
+  /* バナー群 */
+  .banner-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .banner {
+    display: block;
+    background: linear-gradient(135deg, #fff5f8, #fce4ec);
+    border: 2px solid #f7b7cc;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #c45a82;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+
+  .banner:hover {
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+  }
+
+  .banner .banner-icon {
+    font-size: 16px;
+    display: block;
+  }
+
+  /* 季節限定ボックス */
+  .seasonal-box {
+    background: linear-gradient(135deg, #fff9f0, #fff0e0);
+    border: 2px solid #f7c98a;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #7a4a10;
+  }
+
+  .seasonal-box .season-title {
+    font-weight: bold;
+    color: #c47a20;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* フッター */
+  #footer {
+    background: #e8739a;
+    color: #fff;
+    font-size: 12px;
+    padding: 20px;
+    text-align: center;
+    border-top: 3px solid #f7b7cc;
+    margin-top: 20px;
+    line-height: 2;
+  }
+
+  #footer a {
+    color: #ffe4f0;
+    text-decoration: none;
+  }
+
+  #footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* 点滅するテキスト */
+  .blink {
+    animation: blink-anim 1s step-end infinite;
+    color: #c45a82;
+    font-weight: bold;
+  }
+
+  @keyframes blink-anim {
+    50% { opacity: 0; }
+  }
+
+  /* 区切り線 */
+  .section-divider {
+    border: none;
+    border-top: 2px dashed #f7b7cc;
+    margin: 20px 0;
+  }
+
+  /* スマホ対応なし（意図的） */
+</style>
+</head>
+<body>
+
+<!-- トップバナー -->
+<div class="top-banner">
+  ✿ 春の新作ケーキ登場中！いちごのミルクレープ・さくらのマドレーヌ 数量限定です ✿
+</div>
+
+<!-- ヘッダー -->
+<div id="header">
+  <div id="header-inner">
+    <div class="header-logo">
+      <span class="shop-name-en">HIDAMARI</span>
+      <span class="shop-name-ja">ひだまり</span>
+      <span class="shop-name-sub">焼き菓子と喫茶</span>
+    </div>
+    <div class="header-catch">
+      <span class="big">毎日食べたくなる、手作りのやさしさ。</span>
+      仙台・長町の住宅街にある小さなお菓子屋さんです♪<br>
+      焼き菓子・ケーキ・コーヒーをご用意してお待ちしております<br>
+      <span class="blink">★ 現在テイクアウトのご注文も承っております！★</span>
+    </div>
+  </div>
+</div>
+
+<!-- グローバルナビ -->
+<div id="gnav">
+  <ul>
+    <li><a href="#">&#9830; トップ</a></li>
+    <li><a href="#">&#9830; お店について</a></li>
+    <li><a href="#">&#9830; ケーキ＆焼き菓子</a></li>
+    <li><a href="#">&#9830; 写真ギャラリー</a></li>
+    <li><a href="#">&#9830; アクセス</a></li>
+    <li><a href="#">&#9830; お問い合わせ</a></li>
+  </ul>
+</div>
+
+<!-- メインコンテナ -->
+<div id="container">
+
+  <!-- メインコンテンツ -->
+  <div id="main">
+
+    <!-- お知らせ -->
+    <div class="news-box">
+      <h2>♦ お知らせ</h2>
+      <ul>
+        <li><span class="date">2026/03/20</span>春の新作「さくらのマドレーヌ」販売開始しました！<span class="new-badge">NEW</span></li>
+        <li><span class="date">2026/02/14</span>バレンタインの焼き菓子セット、ありがとうございました♪</li>
+        <li><span class="date">2025/12/23</span>クリスマスケーキのご予約受付は終了いたしました</li>
+        <li><span class="date">2025/10/01</span>秋の新作「モンブラン」「かぼちゃのロールケーキ」登場！</li>
+        <li><span class="date">2025/08/01</span>ホームページをリニューアルいたしました（現在のサイト）</li>
+      </ul>
+    </div>
+
+    <!-- メインビジュアル -->
+    <div class="main-visual">
+      <div class="main-visual-icon">🍰</div>
+      <div class="main-visual-text">
+        手作りのやさしい甘さで<br>
+        毎日をちょっと幸せに
+      </div>
+      <div class="main-visual-sub">open 10:00 ～ close 18:00（sold out 次第閉店の場合あり）</div>
+    </div>
+
+    <!-- お店について -->
+    <div class="content-box">
+      <h2>♦ お店について</h2>
+      <p>
+        「ひだまり」は、仙台市太白区長町の住宅街にある小さな焼き菓子と喫茶のお店です。
+        オーナーの田中（元パティシエ）が2019年より一人で切り盛りしております。
+      </p>
+      <p>
+        焼き菓子はクッキー・マドレーヌ・フィナンシェなど、ケーキはその日の仕入れ状況によって
+        2〜4種類をご用意しております。素材はできるだけ国産・地元産にこだわっています。
+        店内でのイートインと、テイクアウトどちらでもお楽しみいただけます♪
+      </p>
+      <p>
+        <strong>席数：</strong>店内4席（小さなカフェスペース）<br>
+        <strong>テイクアウト：</strong>ご来店のほか、お電話でのご予約も承ります
+      </p>
+      <p style="color:#999; font-size:12px;">
+        ※ケーキは売り切れ次第終了となります。ご来店前にお電話でご確認いただけると確実です。
+      </p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- メニュー -->
+    <div class="content-box">
+      <h2>♦ 商品のご案内（一部抜粋）</h2>
+      <table class="menu-table">
+        <tr>
+          <th>商品名</th>
+          <th>内容・備考</th>
+          <th style="width:80px;">お値段</th>
+        </tr>
+        <tr>
+          <td>本日のショートケーキ</td>
+          <td>季節のフルーツを使った手作りショートケーキ（毎日変わります）</td>
+          <td class="menu-price">480円</td>
+        </tr>
+        <tr>
+          <td>ガトーショコラ</td>
+          <td>濃厚チョコレートケーキ。コーヒーとの相性◎</td>
+          <td class="menu-price">420円</td>
+        </tr>
+        <tr>
+          <td>マドレーヌ（1個）</td>
+          <td>バター香るやさしい焼き菓子。プレーン・抹茶・オレンジより選択</td>
+          <td class="menu-price">180円</td>
+        </tr>
+        <tr>
+          <td>フィナンシェ（1個）</td>
+          <td>アーモンドの香り豊かなしっとりフィナンシェ</td>
+          <td class="menu-price">160円</td>
+        </tr>
+        <tr>
+          <td>クッキー缶（15枚入）</td>
+          <td>贈り物にも人気のアソートクッキー缶。季節限定デザインあり</td>
+          <td class="menu-price">1,600円</td>
+        </tr>
+        <tr>
+          <td>コーヒー（自家焙煎）</td>
+          <td>店内イートインのみ。お菓子との同時ご注文で50円引き</td>
+          <td class="menu-price">380円</td>
+        </tr>
+      </table>
+      <p style="margin-top:10px; color:#888; font-size:12px;">
+        ※価格はすべて税込みです。ケーキ類は日によって品揃えが異なります。<br>
+        ※アレルギー対応については個別にご相談ください（電話にてお問い合わせください）。
+      </p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- 写真ギャラリー -->
+    <div class="content-box">
+      <h2>♦ 写真ギャラリー</h2>
+      <p style="font-size:12px; color:#666;">クリックで拡大表示します</p>
+      <div class="photo-gallery">
+        <div class="photo-thumb">
+          <span class="photo-icon">🎂</span>
+          <span>ショートケーキ</span>
+        </div>
+        <div class="photo-thumb">
+          <span class="photo-icon">🍫</span>
+          <span>ガトーショコラ</span>
+        </div>
+        <div class="photo-thumb">
+          <span class="photo-icon">🍪</span>
+          <span>焼き菓子</span>
+        </div>
+        <div class="photo-thumb">
+          <span class="photo-icon">☕</span>
+          <span>コーヒー</span>
+        </div>
+        <div class="photo-thumb">
+          <span class="photo-icon">🏠</span>
+          <span>店内</span>
+        </div>
+      </div>
+      <p style="font-size:11px; color:#bbb; margin-top:10px;">※写真は近日中に追加予定です</p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- アクセス -->
+    <div class="content-box">
+      <h2>♦ アクセス・営業情報</h2>
+      <p>
+        <strong>住所：</strong>宮城県仙台市太白区長町南3丁目 ○○番地<br>
+        <strong>電話：</strong>022-XXX-XXXX<br>
+        <strong>営業：</strong>10:00〜18:00（売り切れ次第終了）<br>
+        <strong>定休：</strong>月曜日・火曜日<br>
+        <strong>最寄：</strong>地下鉄南北線「長町南駅」より徒歩7分
+      </p>
+      <div class="access-map">
+        <span style="font-size:28px;">🗺️</span>
+        <span>地図画像がここに入ります</span>
+        <span style="font-size:11px; color:#bbb;">（GoogleMapを貼り付け予定）</span>
+      </div>
+    </div>
+
+  </div><!-- /#main -->
+
+  <!-- サイドバー -->
+  <div id="sidebar">
+
+    <div class="sidebar-box">
+      <h3>📞 お問い合わせ</h3>
+      <div class="sidebar-box-inner">
+        <span class="tel">022-XXX-XXXX</span>
+        <span class="label">営業時間：</span><br>
+        10:00 〜 18:00<br>
+        <span class="label">定休日：</span>月・火曜日<br>
+        <br>
+        <a href="#" class="reserve-btn">▶ テイクアウト予約</a>
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>🕙 本日の状況</h3>
+      <div class="sidebar-box-inner">
+        <span class="label">営業：</span>10:00〜（本日営業中）<br>
+        <span class="label">残り席：</span>要確認<br>
+        <span class="label">ケーキ：</span>本日3種あり<br>
+        ※情報は更新されないことがあります
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>🌸 今月のおすすめ</h3>
+      <div class="sidebar-box-inner seasonal-box">
+        <span class="season-title">★ 春の限定品！</span>
+        いちごのミルクレープ<br>
+        <span style="color:#c45a82; font-weight:bold;">520円</span><br>
+        <br>
+        <span class="season-title">★ 人気！</span>
+        さくらのマドレーヌ<br>
+        <span style="color:#c45a82; font-weight:bold;">200円</span>
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>🔗 SNS・リンク</h3>
+      <div class="sidebar-box-inner banner-area">
+        <a href="#" class="banner">
+          <span class="banner-icon">📸</span>
+          Instagram
+        </a>
+        <a href="#" class="banner">
+          <span class="banner-icon">📘</span>
+          Facebook
+        </a>
+        <a href="#" class="banner">
+          <span class="banner-icon">🍰</span>
+          食べログ
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>📅 更新履歴</h3>
+      <div class="sidebar-box-inner" style="font-size:11px; line-height:2;">
+        2026/03/20 春の新作追加<br>
+        2026/02/14 バレンタイン情報<br>
+        2025/12/23 クリスマス情報<br>
+        2025/08/01 HP開設<br>
+      </div>
+    </div>
+
+  </div><!-- /#sidebar -->
+
+</div><!-- /#container -->
+
+<!-- フッター -->
+<div id="footer">
+  <p>
+    <a href="#">トップ</a> ｜
+    <a href="#">お店について</a> ｜
+    <a href="#">ケーキ＆焼き菓子</a> ｜
+    <a href="#">アクセス</a> ｜
+    <a href="#">お問い合わせ</a>
+  </p>
+  <p style="margin-top:10px;">
+    焼き菓子と喫茶 ひだまり ／ 宮城県仙台市太白区長町南 ／ TEL: 022-XXX-XXXX<br>
+    営業時間：10:00〜18:00 ／ 定休日：月・火曜日
+  </p>
+  <p style="margin-top:8px; font-size:11px; color:rgba(255,255,255,0.7);">
+    Copyright &copy; 2025 焼き菓子と喫茶 ひだまり All Rights Reserved.
+  </p>
+</div>
+
+</body>
+</html>

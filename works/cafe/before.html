@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>喫茶こもれび｜仙台市青葉区定禅寺通</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f0ece0;
+    color: #1a1a1a;
+    font-family: "游明朝", "Yu Mincho", "ヒラギノ明朝 Pro", "Hiragino Mincho Pro", serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  a {
+    color: #8b1a1a;
+    text-decoration: underline;
+  }
+  a:hover {
+    color: #c0392b;
+  }
+
+  /* ── ヘッダー ── */
+  #header {
+    background: #1a2a4a;
+    border-bottom: 3px solid #8b1a1a;
+    padding: 0;
+  }
+
+  #header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #logo {
+    color: #f5f0e0;
+    font-size: 22px;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    font-weight: normal;
+  }
+
+  #logo span {
+    font-size: 11px;
+    display: block;
+    color: #a0b0c8;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  #nav {
+    display: flex;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #nav li a {
+    display: block;
+    padding: 8px 14px;
+    color: #d0d8e8;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    border-left: 1px solid #2d3f60;
+  }
+  #nav li:last-child a { border-right: 1px solid #2d3f60; }
+  #nav li a:hover {
+    background: #2d3f60;
+    color: #fff;
+  }
+
+  /* ── メインエリア ── */
+  #wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  /* ── ヒーロー ── */
+  #hero {
+    background: #c8bfa8;
+    text-align: center;
+    padding: 48px 20px;
+    margin: 16px 0;
+    border: 1px solid #a09070;
+    position: relative;
+  }
+
+  #hero-inner {
+    border: 1px solid #a09070;
+    padding: 28px 40px;
+    display: inline-block;
+  }
+
+  #hero h1 {
+    font-size: 28px;
+    font-weight: normal;
+    letter-spacing: 0.2em;
+    color: #1a2a4a;
+    margin: 0 0 8px;
+  }
+
+  #hero p {
+    font-size: 12px;
+    color: #4a3a2a;
+    letter-spacing: 0.15em;
+    margin: 0;
+  }
+
+  /* ── コンテンツ2カラム ── */
+  #content-wrap {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  #main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #sidebar {
+    width: 200px;
+    flex-shrink: 0;
+  }
+
+  /* ── セクション共通 ── */
+  .section {
+    background: #fff;
+    border: 1px solid #c8bfa8;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    background: #1a2a4a;
+    color: #f5f0e0;
+    font-size: 13px;
+    font-weight: normal;
+    letter-spacing: 0.15em;
+    padding: 7px 12px;
+    margin: 0;
+    border-bottom: 2px solid #8b1a1a;
+  }
+
+  .section-body {
+    padding: 14px 16px;
+  }
+
+  /* ── お知らせ ── */
+  .news-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .news-list li {
+    padding: 7px 0;
+    border-bottom: 1px dotted #c8bfa8;
+    font-size: 13px;
+    display: flex;
+    gap: 12px;
+  }
+  .news-list li:last-child { border-bottom: none; }
+
+  .news-date {
+    color: #8b1a1a;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  /* ── メニュー表 ── */
+  .menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .menu-table th {
+    background: #e8e0d0;
+    color: #1a2a4a;
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: normal;
+    border: 1px solid #c8bfa8;
+    letter-spacing: 0.05em;
+  }
+
+  .menu-table td {
+    padding: 6px 10px;
+    border: 1px solid #c8bfa8;
+    vertical-align: middle;
+  }
+
+  .menu-table tr:nth-child(even) td {
+    background: #f5f0e8;
+  }
+
+  .menu-price {
+    text-align: right;
+    white-space: nowrap;
+    color: #8b1a1a;
+    font-size: 13px;
+  }
+
+  .menu-category {
+    background: #1a2a4a !important;
+    color: #d0d8e8 !important;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 4px 10px !important;
+  }
+
+  /* ── サイドバー ── */
+  .sidebar-section {
+    background: #fff;
+    border: 1px solid #c8bfa8;
+    margin-bottom: 16px;
+  }
+
+  .sidebar-title {
+    background: #8b1a1a;
+    color: #f5f0e0;
+    font-size: 12px;
+    font-weight: normal;
+    letter-spacing: 0.15em;
+    padding: 6px 10px;
+    margin: 0;
+  }
+
+  .sidebar-body {
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #333;
+  }
+
+  .sidebar-body dl {
+    margin: 0;
+  }
+
+  .sidebar-body dt {
+    font-size: 11px;
+    color: #1a2a4a;
+    border-bottom: 1px dotted #c8bfa8;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
+    margin-top: 8px;
+    letter-spacing: 0.08em;
+  }
+  .sidebar-body dt:first-child { margin-top: 0; }
+
+  .sidebar-body dd {
+    margin: 0 0 4px 0;
+    font-size: 12px;
+  }
+
+  .sidebar-map-placeholder {
+    background: #e8e0d0;
+    border: 1px solid #c8bfa8;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a7a6a;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    margin-top: 8px;
+  }
+
+  /* ── 店舗情報 ── */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .info-table th {
+    background: #e8e0d0;
+    width: 100px;
+    padding: 7px 10px;
+    text-align: left;
+    font-weight: normal;
+    border: 1px solid #c8bfa8;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .info-table td {
+    padding: 7px 10px;
+    border: 1px solid #c8bfa8;
+  }
+
+  /* ── アクセス ── */
+  .access-box {
+    background: #f5f0e8;
+    border: 1px solid #c8bfa8;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 2;
+  }
+
+  /* ── お問い合わせボタン ── */
+  .contact-btn {
+    display: block;
+    background: #1a2a4a;
+    color: #f5f0e0;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    border: 1px solid #0d1a33;
+    margin-top: 8px;
+  }
+  .contact-btn:hover {
+    background: #2d3f60;
+    color: #fff;
+  }
+
+  /* ── フッター ── */
+  #footer {
+    background: #1a2a4a;
+    border-top: 2px solid #8b1a1a;
+    padding: 12px 16px;
+    text-align: center;
+    color: #a0b0c8;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+  }
+
+  /* ── ページトップ ── */
+  .pagetop {
+    text-align: right;
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .pagetop a {
+    color: #1a2a4a;
+    text-decoration: none;
+    border: 1px solid #1a2a4a;
+    padding: 2px 8px;
+    font-size: 11px;
+  }
+  .pagetop a:hover { background: #1a2a4a; color: #fff; }
+
+  /* スマホ対応（最低限） */
+  @media (max-width: 600px) {
+    #header-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+    #nav { flex-wrap: wrap; }
+    #content-wrap { flex-direction: column; }
+    #sidebar { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div id="header">
+  <div id="header-inner">
+    <a href="#" id="logo">
+      喫茶こもれび
+      <span>仙台市青葉区定禅寺通 ／ 昭和58年創業</span>
+    </a>
+    <ul id="nav">
+      <li><a href="#news">お知らせ</a></li>
+      <li><a href="#menu">メニュー</a></li>
+      <li><a href="#info">店舗情報</a></li>
+      <li><a href="#access">アクセス</a></li>
+      <li><a href="#contact">お問合せ</a></li>
+    </ul>
+  </div>
+</div>
+
+<div id="wrapper">
+
+  <!-- ヒーロー -->
+  <div id="hero">
+    <div id="hero-inner">
+      <h1>喫茶 こもれび</h1>
+      <p>定禅寺通のけやき並木のそばで、昭和５８年より</p>
+    </div>
+  </div>
+
+  <!-- 2カラムレイアウト -->
+  <div id="content-wrap">
+
+    <!-- メインカラム -->
+    <div id="main">
+
+      <!-- お知らせ -->
+      <div class="section" id="news">
+        <h2 class="section-title">■ お知らせ</h2>
+        <div class="section-body">
+          <ul class="news-list">
+            <li><span class="news-date">2026.03.15</span><span>春の限定メニュー「桜あんみつ」の販売を開始いたしました。</span></li>
+            <li><span class="news-date">2026.03.01</span><span>3月のランチタイム営業時間を変更いたします。詳しくは店舗情報をご確認ください。</span></li>
+            <li><span class="news-date">2026.02.10</span><span>2月14日（バレンタインデー）は臨時営業いたします（10:00〜19:00）。</span></li>
+            <li><span class="news-date">2025.12.28</span><span>年末年始の営業について。12/30〜1/3はお休みをいただきます。</span></li>
+            <li><span class="news-date">2025.11.01</span><span>ホームページをリニューアルしました。今後ともよろしくお願いします。</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- メニュー -->
+      <div class="section" id="menu">
+        <h2 class="section-title">■ メニュー</h2>
+        <div class="section-body">
+          <p style="font-size:12px; color:#666; margin:0 0 10px;">※価格はすべて税込みです。内容は予告なく変更になる場合がございます。</p>
+
+          <table class="menu-table">
+            <tr>
+              <td colspan="2" class="menu-category">【 コーヒー・紅茶 】</td>
+            </tr>
+            <tr>
+              <td>ブレンドコーヒー</td>
+              <td class="menu-price">550円</td>
+            </tr>
+            <tr>
+              <td>アメリカンコーヒー</td>
+              <td class="menu-price">550円</td>
+            </tr>
+            <tr>
+              <td>カフェオレ</td>
+              <td class="menu-price">600円</td>
+            </tr>
+            <tr>
+              <td>アイスコーヒー</td>
+              <td class="menu-price">600円</td>
+            </tr>
+            <tr>
+              <td>紅茶（ホット／アイス）</td>
+              <td class="menu-price">550円</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="menu-category">【 ソフトドリンク 】</td>
+            </tr>
+            <tr>
+              <td>オレンジジュース</td>
+              <td class="menu-price">500円</td>
+            </tr>
+            <tr>
+              <td>クリームソーダ</td>
+              <td class="menu-price">650円</td>
+            </tr>
+            <tr>
+              <td>コーラ</td>
+              <td class="menu-price">450円</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="menu-category">【 フード 】</td>
+            </tr>
+            <tr>
+              <td>モーニングセット（〜11:00）</td>
+              <td class="menu-price">700円</td>
+            </tr>
+            <tr>
+              <td>ナポリタン</td>
+              <td class="menu-price">900円</td>
+            </tr>
+            <tr>
+              <td>ミックストースト</td>
+              <td class="menu-price">750円</td>
+            </tr>
+            <tr>
+              <td>ホットケーキ</td>
+              <td class="menu-price">700円</td>
+            </tr>
+            <tr>
+              <td>チーズケーキ（単品）</td>
+              <td class="menu-price">500円</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- 店舗情報 -->
+      <div class="section" id="info">
+        <h2 class="section-title">■ 店舗情報</h2>
+        <div class="section-body">
+          <table class="info-table">
+            <tr>
+              <th>店名</th>
+              <td>喫茶 こもれび</td>
+            </tr>
+            <tr>
+              <th>住所</th>
+              <td>〒980-0021<br>宮城県仙台市青葉区中央2丁目（定禅寺通沿い）</td>
+            </tr>
+            <tr>
+              <th>電話</th>
+              <td>022-XXX-XXXX</td>
+            </tr>
+            <tr>
+              <th>営業時間</th>
+              <td>
+                月〜金：8:00〜18:00<br>
+                土日祝：9:00〜17:00
+              </td>
+            </tr>
+            <tr>
+              <th>定休日</th>
+              <td>火曜日・年末年始</td>
+            </tr>
+            <tr>
+              <th>席数</th>
+              <td>20席（禁煙）</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- アクセス -->
+      <div class="section" id="access">
+        <h2 class="section-title">■ アクセス</h2>
+        <div class="section-body">
+          <div class="access-box">
+            〒980-0021 宮城県仙台市青葉区中央2丁目（定禅寺通沿い）<br>
+            ■ 地下鉄東西線「大町西公園駅」より徒歩約5分<br>
+            ■ 地下鉄南北線「広瀬通駅」より徒歩約7分<br>
+            ■ 駐車場はございません。近隣のコインパーキングをご利用ください。
+          </div>
+          <div class="sidebar-map-placeholder" style="height:140px; margin-top:12px;">
+            ［ 地図は準備中です ］
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+
+    <!-- サイドバー -->
+    <div id="sidebar">
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">■ 営業時間</h3>
+        <div class="sidebar-body">
+          <dl>
+            <dt>平日</dt>
+            <dd>8:00〜18:00</dd>
+            <dt>土日祝</dt>
+            <dd>9:00〜17:00</dd>
+            <dt>定休日</dt>
+            <dd>火曜日</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="sidebar-section" id="contact">
+        <h3 class="sidebar-title">■ お問合せ</h3>
+        <div class="sidebar-body">
+          お気軽にお電話ください。<br>
+          <strong>022-XXX-XXXX</strong><br>
+          <span style="font-size:11px; color:#666;">（営業時間内）</span>
+          <a href="mailto:komorebi@example.com" class="contact-btn" style="margin-top:10px;">メールはこちら</a>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">■ 場所</h3>
+        <div class="sidebar-body">
+          仙台市青葉区<br>
+          定禅寺通沿い<br>
+          <div class="sidebar-map-placeholder">［ 地図準備中 ］</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">■ こだわり</h3>
+        <div class="sidebar-body">
+          開業以来、豆の選定から焙煎まで<br>
+          すべて店主が手がけております。<br><br>
+          どうぞゆっくりとお過ごしください。
+        </div>
+      </div>
+
+    </div><!-- /sidebar -->
+
+  </div><!-- /content-wrap -->
+
+  <div class="pagetop"><a href="#">▲ ページトップへ</a></div>
+
+</div><!-- /wrapper -->
+
+<!-- フッター -->
+<div id="footer">
+  Copyright &copy; 喫茶こもれび All Rights Reserved.
+</div>
+
+</body>
+</html>

@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>焼き菓子と喫茶 ひだまり — 仙台・長町</title>
+<meta name="description" content="仙台・長町の住宅街にある小さな焼き菓子と喫茶のお店。手作りの焼き菓子とコーヒーをどうぞ。">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   ROOT & RESET
+   ============================================= */
+:root {
+  --craft:    #A68A61;
+  --craft-dk: #7A6040;
+  --craft-lt: #C4A882;
+  --pista:    #93A67E;
+  --pista-dk: #6B7E5A;
+  --pista-lt: #B8C9A6;
+  --charcoal: #4A4A4A;
+  --charcoal2:#2E2E2E;
+  --ivory:    #F5F2EB;
+  --ivory2:   #EDE8DF;
+  --ivory3:   #E0D8CC;
+  --text:     #3A3228;
+  --text-dim: #7A6E62;
+  --berry:    #A84242;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ivory);
+  color: var(--text);
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+  line-height: 1.8;
+}
+
+/* =============================================
+   NAV
+   ============================================= */
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s, padding 0.3s;
+}
+#nav.scrolled {
+  background: rgba(245, 242, 235, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--ivory3);
+  box-shadow: 0 2px 16px rgba(166,138,97,0.08);
+}
+
+.nav-logo {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--craft-dk);
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+#nav.scrolled .nav-logo {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--charcoal);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.nav-links a:hover { opacity: 1; }
+
+/* =============================================
+   HERO — コラージュ風
+   ============================================= */
+#hero {
+  min-height: 100svh;
+  background: var(--ivory2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 52px;
+  overflow: hidden;
+}
+
+/* 背景テクスチャ風 */
+#hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 30%, rgba(166,138,97,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(147,166,126,0.10) 0%, transparent 55%);
+  z-index: 0;
+}
+
+/* メイン写真（大） */
+.hero-img-main {
+  position: absolute;
+  top: 8%;
+  right: -4%;
+  width: 72%;
+  aspect-ratio: 4/5;
+  border-radius: 24px 0 0 24px;
+  overflow: hidden;
+  box-shadow: -8px 8px 40px rgba(74,58,40,0.18);
+  z-index: 1;
+}
+
+.hero-img-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.hero-img-main::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 60%, rgba(74,58,40,0.15) 100%);
+  pointer-events: none;
+}
+
+/* サブ写真（小） */
+.hero-img-sub {
+  position: absolute;
+  top: 14%;
+  left: 5%;
+  width: 38%;
+  aspect-ratio: 1/1;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 8px 24px rgba(74,58,40,0.14);
+  z-index: 2;
+  transform: rotate(-3deg);
+}
+
+.hero-img-sub img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* 手書き英字アクセント */
+.hero-handwriting {
+  position: absolute;
+  top: 52%;
+  left: 3%;
+  font-family: 'Caveat', cursive;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--craft);
+  line-height: 1.4;
+  z-index: 3;
+  transform: rotate(-4deg);
+  opacity: 0.85;
+}
+
+/* 小さな装飾タグ */
+.hero-tag {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%) rotate(2deg);
+  background: var(--ivory);
+  border: 1.5px solid var(--ivory3);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  color: var(--craft-dk);
+  z-index: 4;
+  box-shadow: 2px 2px 8px rgba(166,138,97,0.15);
+  white-space: nowrap;
+}
+
+/* ヒーロー下部テキスト */
+.hero-text {
+  position: relative;
+  z-index: 5;
+  padding: 0 24px;
+}
+
+.hero-shop-name {
+  font-weight: 700;
+  font-size: 32px;
+  color: var(--craft-dk);
+  letter-spacing: 0.15em;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s ease 0.3s forwards;
+}
+
+.hero-catch {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  line-height: 1.9;
+  margin-bottom: 28px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 0.8s ease 0.5s forwards;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--craft-dk);
+  color: var(--ivory);
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 40px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.7s forwards;
+  transition: background 0.2s, transform 0.2s;
+}
+.hero-cta:hover {
+  background: var(--charcoal2);
+  transform: translateY(-2px);
+}
+.hero-cta::after {
+  content: '→';
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+}
+
+/* スクロールインジケーター */
+.scroll-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Caveat', cursive;
+  font-size: 12px;
+  color: var(--craft);
+  opacity: 0.6;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+.scroll-hint::after {
+  content: '';
+  width: 1px;
+  height: 28px;
+  background: var(--craft);
+  opacity: 0.5;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(5px); }
+}
+
+/* =============================================
+   SECTION COMMON
+   ============================================= */
+.section {
+  padding: 72px 24px;
+}
+
+.section-label {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: var(--craft);
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.section-title {
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--charcoal2);
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+.section-body {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 2;
+}
+
+/* フェードインアニメーション */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================
+   CONCEPT
+   ============================================= */
+#concept {
+  background: var(--ivory);
+}
+
+.concept-inner {
+  max-width: 480px;
+}
+
+.concept-img {
+  width: 100%;
+  aspect-ratio: 3/2;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 24px rgba(166,138,97,0.15);
+}
+
+.concept-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+.concept-quote {
+  font-family: 'Caveat', cursive;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--craft);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding-left: 16px;
+  border-left: 3px solid var(--pista);
+}
+
+/* =============================================
+   TODAY'S BAKE
+   ============================================= */
+#bake {
+  background: var(--ivory2);
+}
+
+.bake-header {
+  margin-bottom: 32px;
+}
+
+.bake-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.bake-card {
+  background: var(--ivory);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(166,138,97,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.bake-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(166,138,97,0.15);
+}
+
+.bake-card-img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  position: relative;
+  overflow: hidden;
+}
+
+.bake-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  transition: transform 0.4s ease;
+}
+
+.bake-card:hover .bake-card-img img {
+  transform: scale(1.04);
+}
+
+.bake-card-img.c1 { background: #D4B896; }
+.bake-card-img.c2 { background: #B8A87C; }
+.bake-card-img.c3 { background: #A8B896; }
+.bake-card-img.c4 { background: #C4A8A8; }
+
+.bake-card-body {
+  padding: 12px 14px 14px;
+}
+
+.bake-card-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--charcoal2);
+  margin-bottom: 2px;
+  letter-spacing: 0.05em;
+}
+
+.bake-card-en {
+  font-family: 'Caveat', cursive;
+  font-size: 11px;
+  color: var(--craft);
+  margin-bottom: 6px;
+}
+
+.bake-card-price {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--craft-dk);
+}
+
+.bake-note {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  font-family: 'Caveat', cursive;
+  font-size: 15px;
+  color: var(--craft);
+}
+
+/* =============================================
+   3 REASONS
+   ============================================= */
+#reasons {
+  background: var(--craft-dk);
+  color: var(--ivory);
+}
+
+#reasons .section-label { color: var(--pista-lt); }
+#reasons .section-title { color: var(--ivory); }
+
+.reasons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 8px;
+}
+
+.reason-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.reason-num {
+  font-family: 'Caveat', cursive;
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--craft-lt);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 44px;
+  opacity: 0.7;
+}
+
+.reason-content {}
+
+.reason-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ivory);
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.reason-body {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(245,242,235,0.65);
+  line-height: 1.9;
+}
+
+/* =============================================
+   SCENE — 利用シーン
+   ============================================= */
+#scene {
+  background: var(--ivory);
+}
+
+.scene-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.scene-card {
+  background: var(--ivory2);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  border: 1px solid var(--ivory3);
+}
+
+.scene-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.scene-text-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--charcoal2);
+  margin-bottom: 4px;
+}
+
+.scene-text-body {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+/* =============================================
+   ACCESS
+   ============================================= */
+#access {
+  background: var(--ivory2);
+}
+
+.access-map {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #D0CCB8 0%, #B8B4A0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  color: rgba(74,74,74,0.5);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  margin-bottom: 28px;
+  box-shadow: 0 2px 16px rgba(166,138,97,0.1);
+}
+.access-map span { font-size: 36px; }
+
+.access-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.access-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.access-label {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: var(--craft);
+  min-width: 64px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.access-value {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.access-divider {
+  border: none;
+  border-top: 1px solid var(--ivory3);
+  margin: 24px 0;
+}
+
+.sns-row {
+  display: flex;
+  gap: 12px;
+}
+
+.sns-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.sns-btn:hover { transform: translateY(-2px); opacity: 0.85; }
+
+.sns-btn.instagram {
+  background: var(--charcoal2);
+  color: var(--ivory);
+}
+
+.sns-btn.line {
+  background: var(--pista-dk);
+  color: var(--ivory);
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+#footer {
+  background: var(--charcoal2);
+  padding: 40px 24px 32px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ivory2);
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+}
+
+.footer-sub {
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  color: var(--craft-lt);
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  list-style: none;
+}
+
+.footer-nav a {
+  font-size: 11px;
+  color: rgba(245,242,235,0.45);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+.footer-nav a:hover { color: var(--ivory); }
+
+.footer-copy {
+  font-size: 10px;
+  color: rgba(245,242,235,0.25);
+  letter-spacing: 0.1em;
+}
+
+/* =============================================
+   DIVIDER デコレーション
+   ============================================= */
+.craft-divider {
+  text-align: center;
+  padding: 8px 0;
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  color: var(--craft-lt);
+  opacity: 0.5;
+  letter-spacing: 8px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">ひだまり</a>
+  <ul class="nav-links">
+    <li><a href="#bake">お菓子</a></li>
+    <li><a href="#access">アクセス</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-img-main">
+    <img src="img_hero.png" alt="ひだまりの店主">
+  </div>
+
+  <div class="hero-img-sub">
+    <img src="img_muffin.png" alt="手作りの焼き菓子">
+  </div>
+
+  <div class="hero-tag">Sendai, Nagamachi ✦ since 2019</div>
+
+  <div class="hero-handwriting">
+    Welcome to<br>Hida-mari
+  </div>
+
+  <div class="hero-text">
+    <h1 class="hero-shop-name">焼き菓子と喫茶<br>ひだまり</h1>
+    <p class="hero-catch">
+      仙台・長町の住宅街にある、<br>
+      小さくて温かいお菓子屋さんです。
+    </p>
+    <a href="#bake" class="hero-cta">今日のお菓子を見る</a>
+  </div>
+
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- CONCEPT -->
+<section id="concept" class="section">
+  <div class="concept-inner fade-in">
+    <div class="concept-img">
+      <img src="img_concept.png" alt="窓際のコーヒーと焼き菓子">
+    </div>
+
+    <span class="section-label">— Our Story</span>
+    <h2 class="section-title">毎日食べたくなる、<br>が合言葉。</h2>
+
+    <p class="concept-quote">
+      "特別な日じゃなくていい。<br>ふらっと立ち寄れるお店でいたい。"
+    </p>
+
+    <p class="section-body">
+      2019年から長町で店を開いています。
+      元パティシエの店主が、宮城の地元素材を使って
+      毎朝焼いています。<br><br>
+      高級すぎず、でもちゃんとおいしい。
+      そんなお菓子をご用意してお待ちしています。
+    </p>
+  </div>
+</section>
+
+<div class="craft-divider">✦ ✦ ✦</div>
+
+<!-- TODAY'S BAKE -->
+<section id="bake" class="section">
+  <div class="bake-header fade-in">
+    <span class="section-label">— Today's Bake</span>
+    <h2 class="section-title">今日の焼き菓子</h2>
+    <p class="section-body">
+      日によって品揃えが変わります。<br>
+      売り切れの場合はご容赦ください。
+    </p>
+  </div>
+
+  <div class="bake-grid">
+    <div class="bake-card fade-in">
+      <div class="bake-card-img c1">
+        <img src="img_shortcake.png" alt="本日のショートケーキ">
+      </div>
+      <div class="bake-card-body">
+        <p class="bake-card-name">本日のケーキ</p>
+        <p class="bake-card-en">Today's Cake</p>
+        <p class="bake-card-price">¥ 480</p>
+      </div>
+    </div>
+
+    <div class="bake-card fade-in">
+      <div class="bake-card-img c2">
+        <img src="img_gateau.png" alt="ガトーショコラ">
+      </div>
+      <div class="bake-card-body">
+        <p class="bake-card-name">ガトーショコラ</p>
+        <p class="bake-card-en">Gateau Chocolat</p>
+        <p class="bake-card-price">¥ 420</p>
+      </div>
+    </div>
+
+    <div class="bake-card fade-in">
+      <div class="bake-card-img c3">
+        <img src="img_madeleine.png" alt="マドレーヌ">
+      </div>
+      <div class="bake-card-body">
+        <p class="bake-card-name">マドレーヌ</p>
+        <p class="bake-card-en">Madeleine</p>
+        <p class="bake-card-price">¥ 180</p>
+      </div>
+    </div>
+
+    <div class="bake-card fade-in">
+      <div class="bake-card-img c4">
+        <img src="img_cookie.png" alt="クッキー缶">
+      </div>
+      <div class="bake-card-body">
+        <p class="bake-card-name">クッキー缶</p>
+        <p class="bake-card-en">Cookie Tin</p>
+        <p class="bake-card-price">¥ 1,600</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="bake-note">☕ コーヒーは店内でどうぞ — ¥ 380</p>
+</section>
+
+<!-- 3 REASONS -->
+<section id="reasons" class="section">
+  <span class="section-label">— Why Hidamari</span>
+  <h2 class="section-title">毎日食べたくなる<br>3つの理由</h2>
+
+  <div class="reasons-list">
+    <div class="reason-item fade-in">
+      <div class="reason-num">01</div>
+      <div class="reason-content">
+        <p class="reason-title">毎朝、手作りで焼いています</p>
+        <p class="reason-body">
+          添加物なし、保存料なし。
+          その日に焼いたものを、その日に売り切る。
+          だから毎日でも安心して食べられます。
+        </p>
+      </div>
+    </div>
+
+    <div class="reason-item fade-in">
+      <div class="reason-num">02</div>
+      <div class="reason-content">
+        <p class="reason-title">宮城の素材を使っています</p>
+        <p class="reason-body">
+          卵は仙台市内の養鶏場から、
+          バターは宮城県産を中心に。
+          地元を感じるお菓子です。
+        </p>
+      </div>
+    </div>
+
+    <div class="reason-item fade-in">
+      <div class="reason-num">03</div>
+      <div class="reason-content">
+        <p class="reason-title">気負わず来られるお店です</p>
+        <p class="reason-body">
+          散歩の途中にふらっと。
+          子どものおやつに。
+          自分へのちょっとしたご褒美に。
+          そんな使い方が一番うれしいです。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE -->
+<section id="scene" class="section">
+  <span class="section-label">— How to Use</span>
+  <h2 class="section-title">こんな時に<br>来てください</h2>
+
+  <div class="scene-cards">
+    <div class="scene-card fade-in">
+      <div class="scene-icon">🚶</div>
+      <div>
+        <p class="scene-text-title">お散歩の途中に</p>
+        <p class="scene-text-body">長町南駅から徒歩7分。住宅街の中にあるので、散歩コースに組み込んでいただけたら嬉しいです。</p>
+      </div>
+    </div>
+
+    <div class="scene-card fade-in">
+      <div class="scene-icon">🎁</div>
+      <div>
+        <p class="scene-text-title">ちょっとしたプレゼントに</p>
+        <p class="scene-text-body">クッキー缶はギフトとしても人気です。季節限定のデザイン缶もご用意しています。</p>
+      </div>
+    </div>
+
+    <div class="scene-card fade-in">
+      <div class="scene-icon">👧</div>
+      <div>
+        <p class="scene-text-title">こどものおやつに</p>
+        <p class="scene-text-body">素材にこだわった手作りなので、お子さんにも安心してお渡しいただけます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="craft-divider">✦ ✦ ✦</div>
+
+<!-- ACCESS -->
+<section id="access" class="section">
+  <span class="section-label">— Find Us</span>
+  <h2 class="section-title">お店への<br>アクセス</h2>
+
+  <div class="access-map fade-in">
+    <span>🗺️</span>
+    Google Map がここに入ります
+  </div>
+
+  <div class="access-info fade-in">
+    <div class="access-row">
+      <span class="access-label">住所</span>
+      <span class="access-value">宮城県仙台市太白区<br>長町南3丁目 ○○番地</span>
+    </div>
+    <div class="access-row">
+      <span class="access-label">電話</span>
+      <span class="access-value">022-XXX-XXXX</span>
+    </div>
+    <div class="access-row">
+      <span class="access-label">営業</span>
+      <span class="access-value">10:00 〜 18:00<br><span style="font-size:12px; color:var(--text-dim);">※売り切れ次第終了</span></span>
+    </div>
+    <div class="access-row">
+      <span class="access-label">定休</span>
+      <span class="access-value">月曜日・火曜日</span>
+    </div>
+    <div class="access-row">
+      <span class="access-label">最寄</span>
+      <span class="access-value">地下鉄南北線<br>長町南駅より徒歩7分</span>
+    </div>
+  </div>
+
+  <hr class="access-divider">
+
+  <div class="sns-row fade-in">
+    <a href="#" class="sns-btn instagram">
+      📸 Instagram
+    </a>
+    <a href="#" class="sns-btn line">
+      💬 LINE
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <p class="footer-logo">ひだまり</p>
+  <p class="footer-sub">焼き菓子と喫茶 / Sendai, Nagamachi</p>
+
+  <ul class="footer-nav">
+    <li><a href="#concept">お店について</a></li>
+    <li><a href="#bake">お菓子</a></li>
+    <li><a href="#reasons">こだわり</a></li>
+    <li><a href="#access">アクセス</a></li>
+  </ul>
+
+  <p class="footer-copy">© 2025 焼き菓子と喫茶 ひだまり. All Rights Reserved.</p>
+</footer>
+
+<script>
+/* NAV scroll */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* Fade in on scroll */
+const fadeEls = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+fadeEls.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

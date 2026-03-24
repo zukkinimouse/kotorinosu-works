@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Café Komorebi — 定禅寺通、昭和五十八年より</title>
+<meta name="description" content="仙台・定禅寺通。昭和五十八年より自家焙煎を続ける喫茶こもれびの物語。">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f4efe4;
+    --paper-dark: #e8e0cc;
+    --ink: #1e1810;
+    --ink-mid: #3a2e1e;
+    --ink-light: #7a6a52;
+    --sepia: #8a6a3a;
+    --forest: #2a4030;
+    --forest-mid: #3d5c47;
+    --rust: #6b3a2a;
+    --gold: #c8982a;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Zen Old Mincho', serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ── ナビ ── */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1150;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--ink);
+    text-decoration: none;
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .nav-logo.visible {
+    opacity: 1;
+  }
+
+  .hamburger {
+    width: 28px;
+    height: 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1200;
+    position: relative;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: var(--ink);
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+
+  .nav-open .hamburger span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+  .nav-open .hamburger span:nth-child(2) { opacity: 0; }
+  .nav-open .hamburger span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--paper);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .nav-open .nav-overlay { opacity: 1; pointer-events: all; }
+
+  .nav-menu {
+    list-style: none;
+    text-align: center;
+  }
+
+  .nav-menu li {
+    margin: 20px 0;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+
+  .nav-open .nav-menu li { opacity: 1; transform: none; }
+  .nav-open .nav-menu li:nth-child(1) { transition-delay: 0.08s; }
+  .nav-open .nav-menu li:nth-child(2) { transition-delay: 0.13s; }
+  .nav-open .nav-menu li:nth-child(3) { transition-delay: 0.18s; }
+  .nav-open .nav-menu li:nth-child(4) { transition-delay: 0.23s; }
+  .nav-open .nav-menu li:nth-child(5) { transition-delay: 0.28s; }
+
+  .nav-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  .nav-menu .nav-ja {
+    display: block;
+    font-family: 'Zen Old Mincho', serif;
+    font-style: normal;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--ink-light);
+    margin-top: 6px;
+  }
+
+  /* ── ヒーロー ── */
+  .hero {
+    min-height: 100svh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('komorebi_hero.png');
+    background-size: cover;
+    background-position: center 30%;
+    filter: sepia(15%) contrast(1.04);
+    z-index: 0;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(10,8,4,0.75) 0%, rgba(10,8,4,0.2) 40%, transparent 65%),
+      linear-gradient(to right, rgba(10,8,4,0.15) 0%, transparent 50%);
+    z-index: 1;
+  }
+
+  /* 右上スタンプ */
+  .hero-stamp {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    z-index: 3;
+    text-align: center;
+    border: 1px solid rgba(244,239,228,0.3);
+    padding: 10px 14px;
+  }
+
+  .hero-stamp-year {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: rgba(244,239,228,0.65);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  .hero-stamp-label {
+    font-size: 0.48rem;
+    letter-spacing: 0.28em;
+    color: rgba(244,239,228,0.38);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* テキストブロック：左下 */
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 64px 64px;
+    width: 100%;
+    max-width: 720px;
+  }
+
+  .hero-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    font-weight: 300;
+    letter-spacing: 0.45em;
+    color: rgba(244,239,228,0.45);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .hero-rule {
+    width: 32px;
+    height: 1px;
+    background: rgba(244,239,228,0.3);
+    margin-bottom: 20px;
+  }
+
+  /* PC：横書き大見出し */
+  .hero-title-pc {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: clamp(2rem, 3.2vw, 3.8rem);
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: 0.12em;
+    color: #f4efe4;
+    text-shadow: 0 2px 20px rgba(10,8,4,0.4);
+    margin-bottom: 24px;
+    white-space: nowrap;
+  }
+
+  .hero-title-pc em {
+    font-style: normal;
+    color: #b8d4a8;
+  }
+
+  /* モバイル縦書き：PC時は非表示 */
+  .hero-title-sp { display: none; }
+
+  .hero-desc {
+    font-size: 0.74rem;
+    line-height: 2.1;
+    color: rgba(244,239,228,0.7);
+    letter-spacing: 0.08em;
+  }
+
+  /* hero-subはモバイル用なので非表示 */
+  .hero-sub { display: none; }
+
+  /* ── 共通 ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.15s; }
+  .reveal-delay-2 { transition-delay: 0.3s; }
+  .reveal-delay-3 { transition-delay: 0.45s; }
+
+  .section-rule {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .section-rule::before,
+  .section-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0.12;
+  }
+
+  .section-rule-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── コンセプト ── */
+  .concept { padding: 120px 0 100px; }
+
+  .concept-inner {
+    max-width: 1100px;
+    margin: 64px auto 0;
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .concept-issue {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--sepia);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .concept-issue::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--sepia);
+    opacity: 0.3;
+    max-width: 60px;
+  }
+
+  .concept-heading {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    margin-bottom: 36px;
+  }
+
+  .concept-body {
+    font-size: 0.88rem;
+    line-height: 2.4;
+    color: var(--ink-mid);
+    letter-spacing: 0.06em;
+    border-left: 2px solid var(--paper-dark);
+    padding-left: 24px;
+  }
+
+  .concept-body p + p { margin-top: 20px; }
+
+  .concept-img-wrap { position: relative; margin-top: 40px; padding-bottom: 60px; padding-left: 32px; }
+
+  .concept-img-main {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    filter: sepia(15%) contrast(1.05);
+  }
+
+  .concept-img-sub {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 55%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    filter: sepia(25%) contrast(1.1);
+    border: 6px solid var(--paper);
+  }
+
+  .concept-caption {
+    margin-top: 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--ink-light);
+    font-style: italic;
+    display: block;
+    width: 100%;
+    padding-left: 32px;
+  }
+
+  /* ── 特集：焙煎 ── */
+  .feature {
+    padding: 100px 0;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('komorebi_menu_beans.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.18;
+    filter: sepia(30%);
+  }
+
+  .feature-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .feature-label-wrap { text-align: center; }
+
+  .feature-label-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(244,239,228,0.12);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    display: block;
+  }
+
+  .feature-label-ja {
+    writing-mode: vertical-rl;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin: 24px auto 0;
+    display: block;
+  }
+
+  .feature-issue {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 24px;
+  }
+
+  .feature-heading {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 400;
+    line-height: 1.7;
+    letter-spacing: 0.1em;
+    color: var(--paper);
+    margin-bottom: 28px;
+  }
+
+  .feature-body {
+    font-size: 0.82rem;
+    line-height: 2.4;
+    color: rgba(244,239,228,0.65);
+    letter-spacing: 0.06em;
+  }
+
+  .feature-body p + p { margin-top: 16px; }
+
+  /* ── メニュー ── */
+  .menu { padding: 100px 0; }
+
+  .menu-inner {
+    max-width: 1100px;
+    margin: 64px auto 0;
+    padding: 0 48px;
+  }
+
+  .menu-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid rgba(30,24,16,0.12);
+  }
+
+  .menu-item {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(30,24,16,0.12);
+    display: grid;
+    grid-template-columns: 28px 1fr 72px 56px;
+    gap: 16px;
+    align-items: center;
+  }
+
+  /* 写真なしの行はgridの3列目を空にする */
+  .menu-item:nth-child(odd)  { padding-right: 48px; border-right: 1px solid rgba(30,24,16,0.12); }
+  .menu-item:nth-child(even) { padding-left: 48px; }
+
+  .menu-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem;
+    color: var(--ink-light);
+    letter-spacing: 0.1em;
+    padding-top: 4px;
+    opacity: 0.5;
+  }
+
+  .menu-tag {
+    font-size: 0.58rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--sepia);
+    margin-bottom: 6px;
+  }
+
+  .menu-name {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .menu-desc {
+    font-size: 0.72rem;
+    color: var(--ink-light);
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+  }
+
+  .menu-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--ink-mid);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    padding-top: 2px;
+  }
+
+  .menu-item-img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex-shrink: 0;
+    filter: sepia(10%) contrast(1.02);
+    opacity: 0.92;
+  }
+
+  /* ── 店舗情報 ── */
+  .info {
+    padding: 100px 0;
+    background: var(--forest);
+  }
+
+  .info-inner {
+    max-width: 1100px;
+    margin: 64px auto 0;
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .info-section-rule {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .info-section-rule-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(244,239,228,0.4);
+    white-space: nowrap;
+  }
+
+  .info-section-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(244,239,228,0.12);
+  }
+
+  .info-list { list-style: none; }
+
+  .info-item {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(244,239,228,0.1);
+    display: flex;
+    gap: 32px;
+  }
+
+  .info-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(244,239,228,0.35);
+    white-space: nowrap;
+    padding-top: 3px;
+    min-width: 60px;
+  }
+
+  .info-value {
+    font-size: 0.85rem;
+    color: rgba(244,239,228,0.8);
+    line-height: 1.9;
+    letter-spacing: 0.06em;
+  }
+
+  .map-wrap {
+    height: 320px;
+    background: rgba(244,239,228,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 1px solid rgba(244,239,228,0.1);
+  }
+
+  .map-wrap svg { color: rgba(244,239,228,0.25); }
+
+  .map-wrap p {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: rgba(244,239,228,0.3);
+  }
+
+  /* ── CTA ── */
+  .cta {
+    padding: 140px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-deco {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px; height: 500px;
+    border: 1px solid rgba(30,24,16,0.06);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .cta-deco::before {
+    content: '';
+    position: absolute;
+    inset: 30px;
+    border: 1px solid rgba(30,24,16,0.04);
+    border-radius: 50%;
+  }
+
+  .cta-inner { position: relative; z-index: 1; }
+
+  .cta-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 24px;
+    opacity: 0.6;
+  }
+
+  .cta-title {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .cta-desc {
+    font-size: 0.78rem;
+    color: var(--ink-light);
+    letter-spacing: 0.1em;
+    line-height: 2;
+    margin-bottom: 48px;
+  }
+
+  .cta-tel {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+  }
+
+  .cta-tel:hover { color: var(--forest); }
+
+  .cta-tel-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  /* ── フッター ── */
+  footer {
+    background: var(--ink);
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(244,239,228,0.6);
+    letter-spacing: 0.15em;
+  }
+
+  .footer-copy {
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: rgba(244,239,228,0.2);
+  }
+
+  /* ── レスポンシブ ── */
+  @media (max-width: 768px) {
+    .nav { padding: 20px 24px; }
+
+    .hero-content { padding: 0 24px 48px; }
+
+    /* モバイル：PC横書きを非表示にして縦書きを表示 */
+    .hero-title-pc { display: none; }
+    .hero-title-sp {
+      display: block;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-family: 'Zen Old Mincho', serif;
+      font-size: clamp(2.4rem, 9vw, 3.2rem);
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0.18em;
+      color: #f4efe4;
+      text-shadow: 0 2px 16px rgba(10,8,4,0.45);
+      margin-bottom: 20px;
+    }
+    .hero-title-sp em {
+      font-style: normal;
+      color: #b8d4a8;
+    }
+
+    .hero-stamp { top: 20px; right: 20px; }
+
+    .menu-item-img { display: none; }
+    .menu-item {
+      grid-template-columns: 24px 1fr auto;
+    }
+    .menu-item span:empty { display: none; }
+    .concept-inner { grid-template-columns: 1fr; gap: 48px; padding: 0 24px; }
+    .concept-img-sub { display: none; }
+    .feature-inner { grid-template-columns: 1fr; gap: 40px; padding: 0 24px; }
+    .feature-label-wrap { display: none; }
+    .menu-inner { padding: 0 24px; }
+    .menu-list { grid-template-columns: 1fr; }
+    .menu-item:nth-child(odd) { padding-right: 0; border-right: none; }
+    .menu-item:nth-child(even) { padding-left: 0; }
+    .info-inner { grid-template-columns: 1fr; gap: 48px; padding: 0 24px; }
+    footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; }
+    .section-rule { padding: 0 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">Café Komorebi</a>
+    <div class="hamburger" id="hamburger" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay">
+    <ul class="nav-menu">
+      <li><a href="#concept" onclick="closeNav()">Concept<span class="nav-ja">こだわり</span></a></li>
+      <li><a href="#feature" onclick="closeNav()">Roasting<span class="nav-ja">焙 煎</span></a></li>
+      <li><a href="#menu" onclick="closeNav()">Menu<span class="nav-ja">メニュー</span></a></li>
+      <li><a href="#info" onclick="closeNav()">About<span class="nav-ja">店舗情報</span></a></li>
+      <li><a href="#contact" onclick="closeNav()">Contact<span class="nav-ja">お問い合わせ</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-stamp">
+    <div class="hero-stamp-year">1983</div>
+    <div class="hero-stamp-label">Founded</div>
+  </div>
+  <div class="hero-content">
+    <span class="hero-en">Jozenji-dori, Sendai</span>
+    <div class="hero-rule"></div>
+    <!-- PC用：横書き -->
+    <h1 class="hero-title-pc">
+      木漏れ日の<em>珈琲</em>を、あなたへ。
+    </h1>
+    <!-- モバイル用：縦書き -->
+    <h1 class="hero-title-sp">
+      木漏れ日の<em>珈琲</em>を、あなたへ。
+    </h1>
+    <p class="hero-desc">
+      定禅寺通のけやき並木のそばで、<br>
+      昭和五十八年より自家焙煎を続けています。<br>
+      一杯のコーヒーに、物語があります。
+    </p>
+  </div>
+</section>
+
+<section class="concept" id="concept">
+  <div class="section-rule reveal">
+    <span class="section-rule-label">Vol.01 — Concept</span>
+  </div>
+  <div class="concept-inner">
+    <div class="concept-text reveal">
+      <p class="concept-issue">喫茶こもれびの物語</p>
+      <h2 class="concept-heading">一杯の珈琲に、<br>四十年の時間が宿る。</h2>
+      <div class="concept-body">
+        <p>昭和五十八年、定禅寺通のけやき並木が芽吹く季節に、この店は生まれました。</p>
+        <p>開業以来変わらないのは、店主自らが豆を選び、焙煎し、一杯ずつ丁寧に淹れるという姿勢です。流行りの味を追わず、ただ「おいしい」と思えるコーヒーだけを、この場所で提供し続けています。</p>
+        <p>定禅寺通の木漏れ日のように、やわらかく、やさしく。喧騒から少し離れたこの場所で、どうぞゆっくりとお過ごしください。</p>
+      </div>
+    </div>
+    <div class="concept-img-wrap reveal reveal-delay-2">
+      <img src="komorebi_concept.png" alt="店内・窓際席" class="concept-img-main">
+      <img src="komorebi_menu_beans.png" alt="自家焙煎コーヒー豆" class="concept-img-sub">
+    </div>
+    <p class="concept-caption">定禅寺通のけやき並木 — 四季折々の表情を見せる</p>
+  </div>
+</section>
+
+<section class="feature" id="feature">
+  <div class="feature-bg"></div>
+  <div class="feature-inner">
+    <div class="feature-label-wrap reveal">
+      <span class="feature-label-en">Roast</span>
+      <span class="feature-label-ja">自家焙煎のこと</span>
+    </div>
+    <div class="feature-content reveal reveal-delay-1">
+      <p class="feature-issue">Vol.02 — Our Roasting</p>
+      <h2 class="feature-heading">煙と熱と、豆の声を<br>聞きながら焼く。</h2>
+      <div class="feature-body">
+        <p>焙煎は、毎朝開店前に行います。その日に使う分だけを、その日に焼く。それが、こもれびのコーヒーがいつも新鮮な理由です。</p>
+        <p>豆の産地・収穫年・精製方法によって、焼き加減は毎回変わります。同じ豆でも、季節によって水分量が変わる。だから同じ焙煎は、二度とありません。</p>
+        <p>この不確かさこそが、コーヒーのおもしろさだと思っています。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="menu" id="menu">
+  <div class="section-rule reveal">
+    <span class="section-rule-label">Vol.03 — Menu</span>
+  </div>
+  <div class="menu-inner">
+    <div class="menu-list">
+      <div class="menu-item reveal">
+        <span class="menu-num">01</span>
+        <div><p class="menu-tag">Coffee</p><h3 class="menu-name">自家焙煎ブレンド</h3><p class="menu-desc">深みとやさしさのバランスを追求した、こもれびオリジナル。</p></div>
+        <img src="komorebi_menu_coffee.png" alt="自家焙煎ブレンド" class="menu-item-img">
+        <span class="menu-price">¥ 600</span>
+      </div>
+      <div class="menu-item reveal reveal-delay-1">
+        <span class="menu-num">02</span>
+        <div><p class="menu-tag">Coffee</p><h3 class="menu-name">アメリカン</h3><p class="menu-desc">軽やかな口当たりで、長く味わいたい方に。</p></div>
+        <span></span>
+        <span class="menu-price">¥ 550</span>
+      </div>
+      <div class="menu-item reveal reveal-delay-1">
+        <span class="menu-num">03</span>
+        <div><p class="menu-tag">Coffee</p><h3 class="menu-name">カフェオレ</h3><p class="menu-desc">自家焙煎の豆とミルクが、やさしく溶け合う一杯。</p></div>
+        <span></span>
+        <span class="menu-price">¥ 650</span>
+      </div>
+      <div class="menu-item reveal reveal-delay-2">
+        <span class="menu-num">04</span>
+        <div><p class="menu-tag">Sweets</p><h3 class="menu-name">季節のチーズケーキ</h3><p class="menu-desc">毎週替わる旬のフルーツを使った、手作りの一品。</p></div>
+        <img src="komorebi_menu_cake.png" alt="季節のチーズケーキ" class="menu-item-img">
+        <span class="menu-price">¥ 600</span>
+      </div>
+      <div class="menu-item reveal reveal-delay-2">
+        <span class="menu-num">05</span>
+        <div><p class="menu-tag">Food</p><h3 class="menu-name">厚焼きホットケーキ</h3><p class="menu-desc">創業当時から変わらないレシピで、ふっくら焼き上げる。</p></div>
+        <img src="komorebi_menu_hotcake.png" alt="厚焼きホットケーキ" class="menu-item-img">
+        <span class="menu-price">¥ 750</span>
+      </div>
+      <div class="menu-item reveal reveal-delay-3">
+        <span class="menu-num">06</span>
+        <div><p class="menu-tag">Morning</p><h3 class="menu-name">モーニングセット</h3><p class="menu-desc">8時〜11時。トースト・ゆで卵・サラダ・コーヒー込み。</p></div>
+        <span></span>
+        <span class="menu-price">¥ 800</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="info" id="info">
+  <div class="section-rule reveal" style="max-width:1100px;margin:0 auto;padding:0 48px;">
+    <span class="section-rule-label" style="color:rgba(244,239,228,0.3);">Vol.04 — About</span>
+  </div>
+  <div class="info-inner">
+    <div class="reveal">
+      <div class="info-section-rule">
+        <span class="info-section-rule-label">Store Information</span>
+      </div>
+      <ul class="info-list">
+        <li class="info-item"><span class="info-label">Address</span><span class="info-value">〒980-0021<br>宮城県仙台市青葉区中央2丁目<br>定禅寺通沿い</span></li>
+        <li class="info-item"><span class="info-label">Hours</span><span class="info-value">月・水〜金　8:00 – 18:00<br>土・日・祝　9:00 – 17:00</span></li>
+        <li class="info-item"><span class="info-label">Closed</span><span class="info-value">火曜日・年末年始</span></li>
+        <li class="info-item"><span class="info-label">Tel</span><span class="info-value">022-XXX-XXXX</span></li>
+        <li class="info-item"><span class="info-label">Seats</span><span class="info-value">20席（全席禁煙）</span></li>
+      </ul>
+    </div>
+    <div class="reveal reveal-delay-2" id="access">
+      <div class="map-wrap">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <circle cx="12" cy="11" r="3"/>
+        </svg>
+        <p>Google Map を埋め込み予定</p>
+        <p style="font-size:0.6rem;opacity:0.5;">仙台市青葉区 定禅寺通</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <div class="cta-deco"></div>
+  <div class="cta-inner reveal">
+    <p class="cta-en">Contact</p>
+    <h2 class="cta-title">ご来店、お待ちして<br>おります。</h2>
+    <p class="cta-desc">ご予約・お問い合わせはお電話にて。<br>団体様のご利用もお気軽にご相談ください。</p>
+    <a href="tel:022-XXX-XXXX" class="cta-tel">022 — XXX — XXXX</a>
+    <p class="cta-tel-label">営業時間内にお電話ください</p>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-logo">Café Komorebi</p>
+  <p class="footer-copy">© 2026 喫茶こもれび — Jozenji-dori, Sendai, Miyagi</p>
+</footer>
+
+<script>
+  function toggleNav() { document.body.classList.toggle('nav-open'); }
+  function closeNav()  { document.body.classList.remove('nav-open'); }
+
+  // ロゴ：ヒーローを抜けたらフェードイン
+  const navLogo = document.querySelector('.nav-logo');
+  const hero = document.querySelector('.hero');
+  window.addEventListener('scroll', () => {
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    navLogo.classList.toggle('visible', heroBottom < 80);
+  }, { passive: true });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

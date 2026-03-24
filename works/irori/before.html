@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>仙台酒場 いろり｜国分町・炭火焼き・地酒</title>
+<style>
+  /* ==============================
+     リニューアル前のホームページ
+     ============================== */
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff8dc;
+    color: #333;
+    font-family: "ＭＳ Ｐゴシック", "MS PGothic", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 14px;
+  }
+
+  /* トップの赤いバナー */
+  .top-banner {
+    background: #cc0000;
+    color: white;
+    text-align: center;
+    padding: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+  }
+
+  /* ヘッダー */
+  #header {
+    background: linear-gradient(180deg, #8b1a1a 0%, #5c1010 100%);
+    padding: 0;
+    border-bottom: 4px solid #f4a460;
+  }
+
+  #header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 20px 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+
+  /* ロゴ画像の代わりにテキストロゴ */
+  .header-logo {
+    background: #fff0c0;
+    border: 3px solid #f4a460;
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 180px;
+  }
+
+  .header-logo .shop-name-en {
+    font-size: 11px;
+    color: #8b1a1a;
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .header-logo .shop-name-ja {
+    font-size: 28px;
+    font-weight: bold;
+    color: #5c1010;
+    display: block;
+    line-height: 1;
+    font-family: "ＭＳ Ｐ明朝", "MS PMincho", "Hiragino Mincho ProN", serif;
+    letter-spacing: 0.1em;
+  }
+
+  .header-logo .shop-name-sub {
+    font-size: 11px;
+    color: #8b1a1a;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .header-catch {
+    color: #fff0c0;
+    font-size: 13px;
+    line-height: 1.8;
+    padding-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .header-catch .big {
+    font-size: 20px;
+    display: block;
+    font-family: "ＭＳ Ｐ明朝", "MS PMincho", "Hiragino Mincho ProN", serif;
+    font-weight: bold;
+  }
+
+  /* グローバルナビ */
+  #gnav {
+    background: #5c1010;
+    border-bottom: 2px solid #f4a460;
+  }
+
+  #gnav ul {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    display: flex;
+  }
+
+  #gnav ul li a {
+    display: block;
+    padding: 12px 20px;
+    color: #fff0c0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    border-right: 1px solid rgba(244,164,96,0.3);
+    transition: background 0.1s;
+    letter-spacing: 0.08em;
+  }
+
+  #gnav ul li:first-child a {
+    border-left: 1px solid rgba(244,164,96,0.3);
+  }
+
+  #gnav ul li a:hover {
+    background: #8b1a1a;
+    color: #ffd700;
+    text-decoration: underline;
+  }
+
+  /* メインレイアウト */
+  #container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  /* メインコンテンツ */
+  #main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* サイドバー */
+  #sidebar {
+    width: 200px;
+    flex-shrink: 0;
+  }
+
+  /* お知らせボックス */
+  .news-box {
+    background: #fff0c0;
+    border: 2px solid #cc0000;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+
+  .news-box h2 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #cc0000;
+    border-bottom: 1px dashed #cc0000;
+    padding-bottom: 6px;
+    font-weight: bold;
+  }
+
+  .news-box ul {
+    margin: 0;
+    padding: 0 0 0 16px;
+    font-size: 13px;
+    line-height: 2;
+  }
+
+  .news-box ul li span.date {
+    color: #666;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+
+  /* メインビジュアルの代わりのボックス */
+  .main-visual {
+    background: linear-gradient(135deg, #1a0a00 0%, #3d1a00 40%, #2a0e00 100%);
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    border: 3px solid #8b6914;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .main-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      rgba(255,160,50,0.03) 4px,
+      rgba(255,160,50,0.03) 8px
+    );
+  }
+
+  /* 炎のアニメーション（CSS） */
+  .flame-container {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .flame {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid #ff6600;
+    position: relative;
+    animation: flicker 0.8s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 8px #ff4400);
+  }
+
+  .flame::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 26px solid #ffaa00;
+    position: absolute;
+    top: 14px;
+    left: -12px;
+    animation: flicker 0.6s ease-in-out infinite alternate-reverse;
+  }
+
+  @keyframes flicker {
+    from { transform: scaleX(1) rotate(-1deg); opacity: 1; }
+    to   { transform: scaleX(0.9) rotate(1deg); opacity: 0.85; }
+  }
+
+  .main-visual-text {
+    color: #ffd700;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: "ＭＳ Ｐ明朝", "MS PMincho", "Hiragino Mincho ProN", serif;
+    text-shadow: 0 0 10px rgba(255,100,0,0.8), 2px 2px 4px rgba(0,0,0,0.8);
+    text-align: center;
+    line-height: 1.6;
+    letter-spacing: 0.1em;
+  }
+
+  .main-visual-sub {
+    color: #f4a460;
+    font-size: 12px;
+    margin-top: 6px;
+    text-align: center;
+    letter-spacing: 0.15em;
+  }
+
+  /* コンテンツボックス */
+  .content-box {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .content-box h2 {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    font-weight: bold;
+    color: #5c1010;
+    background: #fff0c0;
+    border-left: 4px solid #cc0000;
+    padding: 6px 10px;
+  }
+
+  .content-box p {
+    font-size: 13px;
+    line-height: 1.9;
+    color: #444;
+    margin: 0 0 8px 0;
+  }
+
+  /* メニュー表 */
+  .menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .menu-table th {
+    background: #8b1a1a;
+    color: #fff0c0;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .menu-table td {
+    padding: 8px 12px;
+    border-bottom: 1px dotted #ccc;
+    vertical-align: top;
+  }
+
+  .menu-table tr:nth-child(even) td {
+    background: #fff8dc;
+  }
+
+  .menu-table tr:hover td {
+    background: #ffe4b5;
+  }
+
+  .menu-price {
+    white-space: nowrap;
+    color: #cc0000;
+    font-weight: bold;
+    text-align: right;
+  }
+
+  /* 写真ギャラリー（枠だけ） */
+  .photo-gallery {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .photo-thumb {
+    width: 120px;
+    height: 90px;
+    background: #ddd;
+    border: 2px solid #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #666;
+    text-align: center;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .photo-thumb:hover {
+    border-color: #cc0000;
+    background: #f0d090;
+  }
+
+  .photo-thumb .photo-icon {
+    font-size: 24px;
+  }
+
+  /* サイドバーのパーツ */
+  .sidebar-box {
+    background: white;
+    border: 2px solid #8b1a1a;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .sidebar-box h3 {
+    background: #8b1a1a;
+    color: #fff0c0;
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-box-inner {
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #444;
+  }
+
+  .sidebar-box-inner .label {
+    color: #8b1a1a;
+    font-weight: bold;
+  }
+
+  .sidebar-box-inner .tel {
+    font-size: 18px;
+    font-weight: bold;
+    color: #cc0000;
+    letter-spacing: 0.05em;
+    display: block;
+    margin: 4px 0;
+  }
+
+  /* 予約ボタン */
+  .reserve-btn {
+    display: block;
+    background: linear-gradient(180deg, #ff6600, #cc3300);
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    border: 2px solid #ffd700;
+    margin: 8px 0;
+    letter-spacing: 0.08em;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    transition: opacity 0.1s;
+  }
+
+  .reserve-btn:hover {
+    opacity: 0.85;
+    text-decoration: none;
+  }
+
+  /* NEW！ バッジ */
+  .new-badge {
+    display: inline-block;
+    background: #cc0000;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 5px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  /* アクセス */
+  .access-map {
+    background: #e8e8e8;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666;
+    border: 1px solid #ccc;
+    margin-top: 8px;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* バナー群 */
+  .banner-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .banner {
+    display: block;
+    background: linear-gradient(135deg, #fff0c0, #ffd700);
+    border: 2px solid #b8860b;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #5c1010;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+
+  .banner:hover {
+    background: linear-gradient(135deg, #ffd700, #ffa500);
+  }
+
+  .banner .banner-icon { font-size: 18px; display: block; }
+
+  /* フッター */
+  #footer {
+    background: #5c1010;
+    color: #ccc;
+    font-size: 12px;
+    padding: 20px;
+    text-align: center;
+    border-top: 3px solid #f4a460;
+    margin-top: 20px;
+    line-height: 2;
+  }
+
+  #footer a {
+    color: #f4a460;
+    text-decoration: none;
+  }
+
+  #footer a:hover { text-decoration: underline; }
+
+  /* 点滅するテキスト */
+  .blink {
+    animation: blink-anim 1s step-end infinite;
+    color: #cc0000;
+    font-weight: bold;
+  }
+
+  @keyframes blink-anim {
+    50% { opacity: 0; }
+  }
+
+  /* 区切り線 */
+  .section-divider {
+    border: none;
+    border-top: 2px dashed #f4a460;
+    margin: 20px 0;
+  }
+
+  /* スマホ対応なし（意図的） */
+</style>
+</head>
+<body>
+
+<!-- トップバナー -->
+<div class="top-banner">
+  ✦ 只今、ランチ営業は行っておりません。夜営業は17時〜となります ✦
+</div>
+
+<!-- ヘッダー -->
+<div id="header">
+  <div id="header-inner">
+    <div class="header-logo">
+      <span class="shop-name-en">SENDAI SAKABA</span>
+      <span class="shop-name-ja">いろり</span>
+      <span class="shop-name-sub">仙台酒場</span>
+    </div>
+    <div class="header-catch">
+      <span class="big">囲炉裏を囲んで、昔ながらの味を。</span>
+      国分町の路地裏にひっそりと佇む炭火焼の居酒屋<br>
+      <span class="blink">★只今 Googleマップに掲載中！★</span>
+    </div>
+  </div>
+</div>
+
+<!-- グローバルナビ -->
+<div id="gnav">
+  <ul>
+    <li><a href="#">&#9632; トップ</a></li>
+    <li><a href="#">&#9632; お店について</a></li>
+    <li><a href="#">&#9632; メニュー</a></li>
+    <li><a href="#">&#9632; 写真ギャラリー</a></li>
+    <li><a href="#">&#9632; アクセス</a></li>
+    <li><a href="#">&#9632; お問い合わせ</a></li>
+  </ul>
+</div>
+
+<!-- メインコンテナ -->
+<div id="container">
+
+  <!-- メインコンテンツ -->
+  <div id="main">
+
+    <!-- お知らせ -->
+    <div class="news-box">
+      <h2>■ お知らせ</h2>
+      <ul>
+        <li><span class="date">2026/02/14</span>バレンタイン特別コース、ご好評いただきました！<span class="new-badge">NEW</span></li>
+        <li><span class="date">2025/12/01</span>年末年始の営業時間についてはお電話でご確認ください</li>
+        <li><span class="date">2025/10/15</span>秋の新メニューが始まりました！松茸炭火焼き・芋煮など</li>
+        <li><span class="date">2025/08/01</span>ホームページをリニューアルいたしました（現在のサイト）</li>
+      </ul>
+    </div>
+
+    <!-- メインビジュアル -->
+    <div class="main-visual">
+      <div class="flame-container">
+        <div class="flame"></div>
+      </div>
+      <div class="main-visual-text">
+        炭火の温もり、地酒の香り<br>
+        ～ 仙台 国分町 ～
+      </div>
+      <div class="main-visual-sub">open 17:00 ～ close 24:00（L.O. 23:30）</div>
+    </div>
+
+    <!-- お店について -->
+    <div class="content-box">
+      <h2>■ お店について</h2>
+      <p>
+        仙台酒場「いろり」は、国分町の路地裏に2012年よりひっそりと佇む炭火焼き居酒屋です。
+        囲炉裏（いろり）をコンセプトに、宮城・東北産の食材を中心とした一品料理と、
+        地元の酒蔵から仕入れる地酒をご提供しております。
+      </p>
+      <p>
+        店内は木造の落ち着いた雰囲気で、おひとりでもグループでもゆっくりとお過ごしいただけます。
+        カウンター席・テーブル席・掘りごたつ席をご用意しております。
+        宴会・飲み会のご予約もお気軽にご相談ください。
+      </p>
+      <p>
+        <strong>席数：</strong>カウンター8席 ／ テーブル20席 ／ 掘りごたつ個室（4〜8名様）<br>
+        <strong>貸し切り：</strong>20名様より承ります（要事前予約）
+      </p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- メニュー（抜粋） -->
+    <div class="content-box">
+      <h2>■ おすすめメニュー（一部抜粋）</h2>
+      <table class="menu-table">
+        <tr>
+          <th>お料理名</th>
+          <th>説明</th>
+          <th style="width:80px;">お値段</th>
+        </tr>
+        <tr>
+          <td>炭火焼きホルモン盛り合わせ</td>
+          <td>宮城産黒毛和牛の希少部位を炭火で豪快に</td>
+          <td class="menu-price">1,280円</td>
+        </tr>
+        <tr>
+          <td>牡蠣の炭火焼き（2個）</td>
+          <td>三陸産プリプリ牡蠣を豪快に炭火で。レモン添え</td>
+          <td class="menu-price">680円</td>
+        </tr>
+        <tr>
+          <td>ずんだ枝豆</td>
+          <td>宮城名物・ずんだを使った特製枝豆</td>
+          <td class="menu-price">480円</td>
+        </tr>
+        <tr>
+          <td>芋煮（1人前）</td>
+          <td>東北伝統の芋煮。寒い季節にぴったり</td>
+          <td class="menu-price">580円</td>
+        </tr>
+        <tr>
+          <td>笹かまぼこの炙り</td>
+          <td>仙台名物笹かまを直火で炙って香ばしく</td>
+          <td class="menu-price">380円</td>
+        </tr>
+        <tr>
+          <td>地酒飲み比べセット（3種）</td>
+          <td>宮城の酒蔵より厳選3種をセットで</td>
+          <td class="menu-price">1,100円</td>
+        </tr>
+      </table>
+      <p style="margin-top:10px; color:#888; font-size:12px;">
+        ※価格はすべて税込みです。メニューは季節によって変わります。<br>
+        ※詳細はお電話またはご来店の際にお問い合わせください。
+      </p>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- 写真ギャラリー -->
+    <div class="content-box">
+      <h2>■ 写真ギャラリー</h2>
+      <p style="font-size:12px; color:#666;">クリックで拡大表示します</p>
+      <div class="photo-gallery">
+        <div class="photo-thumb">
+          <span class="photo-icon">🍖</span>
+          <span>炭火焼き</span>
+        </div>
+        <div class="photo-thumb">
+          <span class="photo-icon">🦪</span>
+          <span>牡蠣焼き</span>
+        </div>
+        <div class="photo-thumb">
+          <span class="photo-icon">🏮</span>
+          <span>店内</span>
+        </div>
+        <div class="photo-thumb">
+          <span class="photo-icon">🍶</span>
+          <span>地酒</span>
+        </div>
+        <div class="photo-thumb">
+          <span class="photo-icon">🍲</span>
+          <span>芋煮</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- アクセス -->
+    <div class="content-box">
+      <h2>■ アクセス</h2>
+      <p>
+        <strong>住所：</strong>宮城県仙台市青葉区国分町2丁目 ○○ビル1F<br>
+        <strong>電話：</strong>022-XXX-XXXX<br>
+        <strong>営業：</strong>17:00〜24:00（L.O. 23:30）<br>
+        <strong>定休：</strong>月曜日（祝日の場合は翌火曜日）<br>
+        <strong>最寄：</strong>地下鉄東西線「大町西公園駅」より徒歩3分
+      </p>
+      <div class="access-map">
+        <span style="font-size:28px;">🗺️</span>
+        <span>地図画像がここに入ります</span>
+        <span style="font-size:11px; color:#999;">（GoogleMapを貼り付け予定）</span>
+      </div>
+    </div>
+
+  </div><!-- /#main -->
+
+  <!-- サイドバー -->
+  <div id="sidebar">
+
+    <div class="sidebar-box">
+      <h3>📞 ご予約・お問い合わせ</h3>
+      <div class="sidebar-box-inner">
+        <span class="tel">022-XXX-XXXX</span>
+        <span class="label">営業時間：</span><br>
+        17:00 〜 24:00<br>
+        <span class="label">定休日：</span>月曜日<br>
+        <br>
+        <a href="#" class="reserve-btn">▶ 今すぐ予約する</a>
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>🕐 営業情報</h3>
+      <div class="sidebar-box-inner">
+        <span class="label">本日：</span>営業中<br>
+        <span class="label">席状況：</span>要確認<br>
+        <span class="label">駐車場：</span>なし<br>
+        ※近隣のコインPをご利用ください
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>🍶 今月のおすすめ</h3>
+      <div class="sidebar-box-inner">
+        <span class="label">★ 春限定！</span><br>
+        山菜の天ぷら盛合わせ<br>
+        <span style="color:#cc0000; font-weight:bold;">880円</span><br>
+        <br>
+        <span class="label">★ 地酒入荷！</span><br>
+        「浦霞」新酒<br>
+        <span style="color:#cc0000; font-weight:bold;">グラス600円〜</span>
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>🔗 リンク</h3>
+      <div class="sidebar-box-inner banner-area">
+        <a href="#" class="banner">
+          <span class="banner-icon">📘</span>
+          Facebookページ
+        </a>
+        <a href="#" class="banner">
+          <span class="banner-icon">📸</span>
+          Instagram
+        </a>
+        <a href="#" class="banner">
+          <span class="banner-icon">🍜</span>
+          食べログ
+        </a>
+        <a href="#" class="banner">
+          <span class="banner-icon">📋</span>
+          ホットペッパー
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>📅 最近の更新</h3>
+      <div class="sidebar-box-inner" style="font-size:11px; line-height:2;">
+        2026/02/14 お知らせ更新<br>
+        2025/12/01 年末情報追加<br>
+        2025/10/15 秋メニュー追加<br>
+        2025/08/01 HP開設<br>
+      </div>
+    </div>
+
+  </div><!-- /#sidebar -->
+
+</div><!-- /#container -->
+
+<!-- フッター -->
+<div id="footer">
+  <p>
+    <a href="#">トップ</a> ｜
+    <a href="#">お店について</a> ｜
+    <a href="#">メニュー</a> ｜
+    <a href="#">アクセス</a> ｜
+    <a href="#">お問い合わせ</a>
+  </p>
+  <p style="margin-top: 10px;">
+    仙台酒場 いろり ／ 宮城県仙台市青葉区国分町 ／ TEL: 022-XXX-XXXX<br>
+    営業時間：17:00〜24:00 ／ 定休日：月曜日
+  </p>
+  <p style="margin-top: 8px; font-size: 11px; color: #999;">
+    Copyright &copy; 2025 仙台酒場いろり All Rights Reserved.
+  </p>
+</div>
+
+</body>
+</html>
