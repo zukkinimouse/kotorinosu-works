@@ -1169,6 +1169,11 @@
       `;
     }).join('');
 
+    // 動的追加要素にrevealアニメーションを適用
+    document.querySelectorAll('.diary-item').forEach(el => {
+      observer.observe(el);
+    });
+
   } catch (e) {
     list.innerHTML = '<p class="diary-empty">読み込みに失敗しました。</p>';
   }
