@@ -151,7 +151,7 @@ body {
 
 .hero-title {
   font-family: var(--font-ja);
-  font-size: clamp(2.2rem, 8vw, 3.8rem);
+  font-size: clamp(1.6rem, 5vw, 3.2rem);
   line-height: 1.35;
   color: var(--text);
   letter-spacing: 0.03em;
@@ -163,6 +163,10 @@ body {
 .hero-title em {
   font-style: normal;
   color: var(--moss);
+}
+.hero-line {
+  display: block;
+  white-space: nowrap;
 }
 
 .hero-desc {
@@ -1119,10 +1123,12 @@ section { padding: 72px 24px; }
     <p class="hero-eyebrow">Web Design for Local Shops, Sendai</p>
 
     <h1 class="hero-title">
-      売上を増やして、<br>
-      廃棄を減らす。<br>
-      <em>個人店のためのWeb制作<br>
-      ことりの巣。</em>
+      <span class="hero-line">売上を増やして、</span>
+      <span class="hero-line">廃棄を減らす。</span>
+      <em>
+        <span class="hero-line">個人店のためのWeb制作</span>
+        <span class="hero-line">ことりの巣。</span>
+      </em>
     </h1>
 
     <p class="hero-desc">
